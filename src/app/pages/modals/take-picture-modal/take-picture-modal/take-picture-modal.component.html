@@ -1,0 +1,23 @@
+
+<div class="justify-content-center align-items-center w-100 pd-20" >
+
+    <webcam [height]="500" [width]="500" [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"
+    [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
+    [videoOptions]="videoOptions"
+    [imageQuality]="1"
+    (initError)="handleInitError($event)"
+    ></webcam>
+
+    
+    <div class="d-flex  justify-content-center align-items-center w-100" *ngIf="webcamImage">
+        <img [src]="webcamImage.imageAsDataUrl"/>
+    </div>
+    <div class="d-flex justify-content-center align-items-center w-100 mt-20">
+        <button mat-flat-button color="primary" class="m-r-8" (click)="triggerSnapshot()">
+            Tirar foto
+        </button> &nbsp;
+     
+    </div>
+       
+
+</div>

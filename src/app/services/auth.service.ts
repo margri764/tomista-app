@@ -89,9 +89,16 @@ export class AuthService {
     )
   }
 
-  createInscription(body:any){
+  createInscription( body:any, file : File  ){
+
+    console.log(body);
+
+    const JSONbody = JSON.stringify(body)
+    const formData = new FormData();
+    formData.append("file", file )
+    formData.append("body", JSONbody )
     
-    return this.http.put<any>(`${this.baseUrl}api/inscription/createInscription`, body) 
+    return this.http.post<any>(`${this.baseUrl}api/inscription/createInscription`, formData) 
     
     .pipe(
       tap( ( res) =>{console.log("from createInscription Service: ", res);  }  

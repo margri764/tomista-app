@@ -4,6 +4,9 @@
    <div class="col-sm-12 col-xs-12 col-md-10">
 
     <mat-card class="cardWithShadow" style="margin-top: 20px;">
+    
+        <form [formGroup]="form" class="m-t-24" autocomplete="off">
+
         <mat-card-content class="p-0" >
         <mat-tab-group mat-stretch-tabs="false" animationDuration="0ms">
             <mat-tab>
@@ -24,16 +27,23 @@
                             <mat-card-subtitle class="mat-body-1"
                             >Mude sua foto de perfil aqui</mat-card-subtitle
                             >
-                            <div class="text-center " style="margin-top: 70px;">
-                                <img src="/assets/images/profile/user-1.jpg" class="rounded-circle" width="120" *ngIf="!pathImg"
+                            <div class="text-center " style="margin-top: 70px;">  
+                                <!-- <span class="material-symbols-outlined" style="font-size: 150px;" *ngIf="!pathImg">photo_camera</span> -->
+                                <img src="/assets/images/profile/user-1.jpg" class="rounded-circle" width="200" *ngIf="!pathImg"
                                 />
-                                <img [src]="pathImg" class="rounded-circle" width="120" *ngIf="pathImg"/>
+                                <img [src]="pathImg" class="rounded-circle" width="200" *ngIf="pathImg"/>
                             
                                 <div style="margin-top: 70px;">
                                     <button mat-flat-button color="primary" class="m-r-8" (click)="fileUploader.click()">Carregar</button> &nbsp;
+                                    
+                                    <button mat-flat-button color="primary" class="m-r-8" (click)="openDialog()">
+                                        <span class="material-symbols-outlined">photo_camera</span>
+                                    </button> &nbsp;
                                  
                                     <button mat-stroked-button color="warn" (click)="cancelImag()">Reinicar</button>
                                 </div>
+
+                             
                                 <span class="f-s-14 m-t-24 d-block"
                                     >Permitido JPG, JPEG o PNG</span
                                 >
@@ -55,7 +65,6 @@
                             <mat-card-subtitle class="mat-body-1"
                               >Crie sua senha aqui</mat-card-subtitle
                             >
-                            <form [formGroup]="passwordForm" class="m-t-24" autocomplete="off">
 
                                 <div class="row m-t-24">
 
@@ -75,13 +84,13 @@
                                             <mat-icon>{{ confirmVisible ? 'visibility' : 'visibility_off' }}</mat-icon>
                                         </button>
 
-                                        @if(fp['password'].touched && fp['password'].invalid) {
+                                        @if(f['password'].touched && f['password'].invalid) {
                                             <mat-hint class="m-b-16 error-msg">
-                                            @if(fp['password'].errors && fp['password'].errors['required']) {
+                                            @if(f['password'].errors && f['password'].errors['required']) {
                                             <div class="text-error">campo requerido.</div>
                                             } 
 
-                                            @if(fp['password'].errors && fp['password'].errors['pattern']) {
+                                            @if(f['password'].errors && f['password'].errors['pattern']) {
                                                 <div class="text-error">A senha deve conter pelo menos uma letra, um número e ter no mínimo 8 caracteres.</div>
                                                 } 
                                             </mat-hint>
@@ -98,12 +107,12 @@
                                             <mat-icon>{{ confirmVisible ? 'visibility' : 'visibility_off' }}</mat-icon>
                                         </button>
 
-                                        @if(fp['confirm'].touched && fp['confirm'].invalid) {
+                                        @if(f['confirm'].touched && f['confirm'].invalid) {
                                             <mat-hint class="m-b-16 error-msg">
-                                            @if(fp['confirm'].errors && fp['confirm'].errors['required']) {
+                                            @if(f['confirm'].errors && f['confirm'].errors['required']) {
                                             <div class="text-error">campo requerido.</div>
                                         } 
-                                        @if(fp['confirm'].errors && fp['confirm'].errors['match']) {
+                                        @if(f['confirm'].errors && f['confirm'].errors['match']) {
                                             <div class="text-error">As senhas não coincidem.</div>
                                         }
                                             </mat-hint>
@@ -112,7 +121,7 @@
                                     </div>
                                 </div>
                              
-                            </form>
+                           
                           </mat-card-content>
                         </mat-card>
                       </div>
@@ -126,7 +135,7 @@
                                 >
             
     
-                                <form [formGroup]="form">
+                              
     
                                     <div class="row m-t-24">
     
@@ -191,7 +200,6 @@
     
     
                                 
-                                </form> 
                                 
                                 
                             
@@ -199,6 +207,7 @@
                             </mat-card>
                     </div>
                 </div>
+
             </mat-card-content>
             </mat-tab>
 
@@ -383,6 +392,8 @@
             <!-- <button mat-stroked-button color="warn">Cancel</button> -->
         </div>
         </mat-card-content>
+    </form> 
+
     </mat-card>
 
    </div>
