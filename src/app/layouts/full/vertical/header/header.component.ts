@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Input,
   ViewEncapsulation,
+  OnInit,
 } from '@angular/core';
 import { CoreService } from 'src/app/services/core.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,6 +16,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { ErrorService } from 'src/app/services/error.service';
 
 
 interface notifications {
@@ -97,7 +99,8 @@ export class HeaderComponent {
   constructor(
     private vsidenav: CoreService,
     public dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private errorService : ErrorService
   ) {
     translate.setDefaultLang('en');
   }
@@ -109,6 +112,10 @@ export class HeaderComponent {
       console.log(`Dialog result: ${result}`);
     });
   }
+
+  logout(){
+    this.errorService.logout();
+   }
 
   changeLanguage(lang: any): void {
     this.translate.use(lang.code);
@@ -286,7 +293,9 @@ export class HeaderComponent {
   ],
   templateUrl: 'search-dialog.component.html',
 })
-export class AppSearchDialogComponent {
+
+export class AppSearchDialogComponent  {
+
   searchText: string = '';
   navItems = navItems;
 
@@ -295,4 +304,6 @@ export class AppSearchDialogComponent {
   // filtered = this.navItemsData.find((obj) => {
   //   return obj.displayName == this.searchinput;
   // });
+
+
 }

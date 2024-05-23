@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 
 // dashboards
 import { AppDashboard1Component } from './dashboard1/dashboard1.component';
+import { FormCongressComponent } from '../form-congress/form-congress/form-congress.component';
 
 export const DashboardsRoutes: Routes = [
   {
@@ -18,6 +19,9 @@ export const DashboardsRoutes: Routes = [
           ],
         },
       },
+      {
+        // path: 'formulario', component: FormCongressComponent,  data: { title: 'Formulario' },
+      }
      
     ],
   },

@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
+import { CookieService } from 'ngx-cookie-service';
 
 interface response  {
   emmited: boolean,
@@ -34,6 +35,7 @@ export class ErrorService {
   close$ = new BehaviorSubject<boolean>(false) ;//quiero a ce cierren todos los modals cuando se produce un error de servidor 
   authDelTempOrder$ : EventEmitter<boolean> = new EventEmitter<boolean>; 
   closeIsLoading$ : EventEmitter<boolean> = new EventEmitter<boolean>; 
+  closeNotAnswerLogin$ : EventEmitter<boolean> = new EventEmitter<boolean>; 
   noVerifiedError$ : EventEmitter<boolean> = new EventEmitter<boolean>; 
   noRoleError$ : EventEmitter<boolean> = new EventEmitter<boolean>; 
   labelInvalidCredential$ : EventEmitter<boolean> = new EventEmitter<boolean>; 
@@ -46,7 +48,8 @@ export class ErrorService {
   
   constructor(
               private router : Router,
-              public toastr: ToastrService
+              public toastr: ToastrService,
+              private cookieService : CookieService
 
 
   ) { 
@@ -54,6 +57,10 @@ export class ErrorService {
 
   getError(error : any) {
     console.log(error);
+
+    if(error){
+      this.closeNotAnswerLogin$.emit(true);
+    }
 
     if (error.statusText === "Unknown Error" ) {
       const title = 'Erro Interno do Servidor';
@@ -284,8 +291,13 @@ if (error.status === 500 && error.error.error === 'Ocorreu um erro fora do nosso
   logout(){
           localStorage.removeItem("logged");
           localStorage.removeItem("user");
+          sessionStorage.removeItem("user");
           sessionStorage.removeItem('session');
-          this.router.navigateByUrl('login'); 
+
+          if (this.cookieService.check('token')) {
+            this.cookieService.delete('token', '/');    
+          }
+          this.router.navigateByUrl('/autenticacao/login'); 
   }
 
  

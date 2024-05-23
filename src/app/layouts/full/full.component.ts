@@ -18,6 +18,7 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { HeaderComponent } from './vertical/header/header.component';
 import { AppBreadcrumbComponent } from './shared/breadcrumb/breadcrumb.component';
 import { CustomizerComponent } from './shared/customizer/customizer.component';
+import { ErrorService } from 'src/app/services/error.service';
 
 const MOBILE_VIEW = 'screen and (max-width: 768px)';
 const TABLET_VIEW = 'screen and (min-width: 769px) and (max-width: 1024px)';
@@ -186,11 +187,12 @@ export class FullComponent implements OnInit {
   ];
 
   constructor(
-    private settings: CoreService,
-    private mediaMatcher: MediaMatcher,
-    private router: Router,
-    private breakpointObserver: BreakpointObserver,
-    private navService: NavService,
+              private settings: CoreService,
+              private mediaMatcher: MediaMatcher,
+              private router: Router,
+              private breakpointObserver: BreakpointObserver,
+              private navService: NavService,
+              private errorService : ErrorService
   ) {
     this.htmlElement = document.querySelector('html')!;
     this.layoutChangesSubscription = this.breakpointObserver
@@ -256,5 +258,9 @@ export class FullComponent implements OnInit {
       this.htmlElement.classList.remove('dark-theme');
       this.htmlElement.classList.add('light-theme');
     }
+  }
+
+  logout(){
+    this.errorService.logout();
   }
 }

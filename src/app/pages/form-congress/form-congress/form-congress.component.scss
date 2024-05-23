@@ -1,0 +1,24 @@
+
+.fondo{
+    background-image: url('../../../../assets/images/backgrounds/bariloche.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background-color: #e9ecef;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    height: 100vh;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+.eye {
+    position: absolute;
+    top: 60%;
+    right: 5px;
+    transform: translateY(-65%);
+  }

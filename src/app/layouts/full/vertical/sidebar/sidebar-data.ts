@@ -109,7 +109,7 @@ export const navItems: NavItem[] = [
   {
     displayName: 'Maintenance',
     iconName: 'settings',
-    route: '/authentication/maintenance',
+    route: '/autenticacao/maintenance',
   },
   
  

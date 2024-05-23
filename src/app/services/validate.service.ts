@@ -50,10 +50,11 @@ export class ValidateService {
   }
   
     passwordValidator( password : string, confirm : string ) {
-  
       return ( formGroup: AbstractControl) : ValidationErrors | null =>{
         const pass1 = formGroup.get(password)?.value;
         const pass2 = formGroup.get(confirm)?.value;
+        console.log(pass1, pass2);
+        
   
         if (pass1 !== pass2) {
            formGroup.get(confirm)?.setErrors({match: true})

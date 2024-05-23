@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { ContactusModalComponent } from '../../modals/contactus-modal/contactus-modal/contactus-modal.component';
 import { MaterialModule } from 'src/app/material.module';
+import { saveDataSS } from 'src/app/storage';
 
 @Component({
   selector: 'app-verify-email',
@@ -83,9 +84,10 @@ export class VerifyEmailComponent implements OnInit {
         }else if(success){
           this.showTemplate = true;
           this.isLoading = false;
+          saveDataSS('user', {email: body.email})
             setTimeout(()=>{ 
-              this.router.navigateByUrl('/autenticacao/login')}
-             ,2500)
+              this.router.navigateByUrl('/formulario')}
+             ,3500)
         }
       })
   }

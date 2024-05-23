@@ -1,11 +1,12 @@
 import { Routes } from '@angular/router';
+import { FormCongressComponent } from './form-congress/form-congress/form-congress.component';
 
 export const PagesRoutes: Routes = [
-  // {
-  //   path: '',
-  //   component: StarterComponent,
-  //   data: {
-  //     title: 'Starter Page',
-  //   },
-  // },
+  {
+    // path: '',
+    // component: FormCongressComponent,
+    // data: {
+    //   title: 'Formulario',
+    // },
+  },
 ];

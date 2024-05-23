@@ -26,13 +26,13 @@
   <!-- --------------------------------------------------------------- -->
   <!--  Search -->
   <!-- --------------------------------------------------------------- -->
-  <button
+  <!-- <button
     mat-icon-button
     (click)="openDialog()"
     class="d-flex justify-content-center"
   >
     <i-tabler name="search" class="icon-20 d-flex"></i-tabler>
-  </button>
+  </button> -->
 
   <div class="d-none d-lg-flex">
     <!-- --------------------------------------------------------------- -->
@@ -129,7 +129,7 @@
   <!-- --------------------------------------------------------------- -->
   <!-- langugage Dropdown -->
   <!-- --------------------------------------------------------------- -->
-  <button [matMenuTriggerFor]="flags" mat-icon-button class="m-r-5">
+  <!-- <button [matMenuTriggerFor]="flags" mat-icon-button class="m-r-5">
     <img
       [src]="selectedLanguage.icon"
       class="rounded-circle object-cover icon-20"
@@ -147,7 +147,7 @@
       </div>
     </button>
     }
-  </mat-menu>
+  </mat-menu> -->
 
   <!-- --------------------------------------------------------------- -->
   <!-- Notification Dropdown -->
@@ -208,7 +208,11 @@
       class="rounded-circle object-cover icon-35 profile-dd"
       width="35"
     />
+
   </button>
+ 
+  <span class="font" style="font-size: 0.8em;"> Marcelo Griotti </span>
+
   <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">
     <ng-scrollbar class="position-relative" style="height: 647px">
       <div class="p-x-32 p-y-16">
@@ -257,7 +261,7 @@
         }
 
         <!-- upgrade -->
-        <div
+        <!-- <div
           class="p-24 overflow-hidden bg-light-primary rounded position-relative m-y-16"
         >
           <div class="d-flex align-items-center">
@@ -276,15 +280,16 @@
               />
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div class="p-y-12 p-x-32">
         <a
-          [routerLink]="['/authentication/side-login']"
+          routerLink='/autenticacao/login'
           mat-stroked-button
           color="primary"
           class="w-100"
+          (click)="logout()"
           >Logout</a
         >
       </div>

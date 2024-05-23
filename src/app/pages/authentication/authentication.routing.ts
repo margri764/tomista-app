@@ -45,7 +45,7 @@ export const AuthenticationRoutes: Routes = [
         component: VerifyEmailComponent,
       },
       {
-        path: 'side-forgot-pwd',
+        path: 'recuperar-senha',
         component: AppSideForgotPasswordComponent,
       },
       {
