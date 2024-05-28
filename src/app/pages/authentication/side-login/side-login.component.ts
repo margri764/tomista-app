@@ -9,18 +9,32 @@ import { ErrorService } from 'src/app/services/error.service';
 import { delay } from 'rxjs';
 import { saveDataLS } from 'src/app/storage';
 import { CookieService } from 'ngx-cookie-service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-side-login',
   standalone: true,
-  imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, MaterialModule, FormsModule, ReactiveFormsModule],
   templateUrl: './side-login.component.html',
+  styles:[ `
+    .eye {
+      position: absolute;
+      top: 60%;
+      right: 5px;
+      transform: translateY(-65%);
+    }
+  `
+  
+  ]
 })
 
 export class AppSideLoginComponent implements OnInit {
 
   options = this.settings.getOptions();
   isLoading : boolean = false;
+  passwordVisible = false;
+  confirmVisible = false;
+  phone : boolean = false;
 
   constructor(
               private settings: CoreService, 
@@ -33,6 +47,7 @@ export class AppSideLoginComponent implements OnInit {
 
              ) 
 {
+  (screen.width < 800) ? this.phone = true : this.phone = false;
 
 
  }
@@ -79,4 +94,10 @@ export class AppSideLoginComponent implements OnInit {
         }
       })
   }
+
+  togglePasswordVisibility(value : string) : void {
+    (value == "password") ? this.passwordVisible = !this.passwordVisible : '';
+    (value == "confirm") ? this.confirmVisible = !this.confirmVisible : '';
+}
+ 
 }

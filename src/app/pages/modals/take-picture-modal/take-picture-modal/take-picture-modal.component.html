@@ -1,23 +1,24 @@
 
-<div class="justify-content-center align-items-center w-100 pd-20" >
-
-    <webcam [height]="500" [width]="500" [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"
-    [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
-    [videoOptions]="videoOptions"
-    [imageQuality]="1"
-    (initError)="handleInitError($event)"
-    ></webcam>
-
-    
-    <div class="d-flex  justify-content-center align-items-center w-100" *ngIf="webcamImage">
-        <img [src]="webcamImage.imageAsDataUrl"/>
-    </div>
+<div class="modal-dialog">
+    <webcam [trigger]="triggerObservable" 
+            (imageCapture)="handleImage($event)"
+            [allowCameraSwitch]="allowCameraSwitch" 
+            [switchCamera]="nextWebcamObservable"
+            [videoOptions]="videoOptions"
+            [width]="imgSize"
+            [height]="imgSize"
+            [imageQuality]="1"
+            (initError)="handleInitError($event)"
+            class="webcam"  >
+    </webcam>
+  
     <div class="d-flex justify-content-center align-items-center w-100 mt-20">
-        <button mat-flat-button color="primary" class="m-r-8" (click)="triggerSnapshot()">
-            Tirar foto
-        </button> &nbsp;
-     
+      <button mat-raised-button color="primary" (click)="triggerSnapshot()">
+        <mat-icon>photo_camera</mat-icon>
+        Tirar foto
+      </button>
     </div>
-       
+  
 
-</div>
+  </div>
+  

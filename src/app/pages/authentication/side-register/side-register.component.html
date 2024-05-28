@@ -3,17 +3,15 @@
     <div class="col-lg-7 col-xl-8 bg-gredient p-0">
       <div class="p-24 h-100">
         @if(options.theme === 'light') {
-        <a [routerLink]="['/dashboards/dashboard1']">
-          <img
-            src="./assets/images/logos/dark-logo.svg"
-            class="align-middle m-2"
-            alt="logo"
-          />
-        </a>
+          <div class="d-flex justify-content-start align-items-center w-100 mt-20">
+            <!-- <img src="./assets/images/logo-tomista.jpg" class="img-fluid" alt="logo" width="50px"  /> -->
+            <h1 class="font"> <b>CongresoTomista</b></h1>
+
+          </div>
         } @if(options.theme === 'dark') {
         <a [routerLink]="['/dashboards/dashboard1']">
           <img
-            src="./assets/images/logos/light-logo.svg"
+            src="./assets/images/logo-tomista.jpg"
             class="align-middle m-2"
             alt="logo"
           />
@@ -24,7 +22,7 @@
           class="align-items-center justify-content-center img-height d-none d-lg-flex"
         >
           <img
-            src="/assets/images/backgrounds/login-bg.svg"
+            src="/assets/images/logo-tomista.jpg"
             alt="login"
             style="max-width: 500px"
           />

@@ -89,7 +89,7 @@ export class AuthService {
     )
   }
 
-  createInscription( body:any, file : File  ){
+  createProfile( body:any, file : File  ){
 
     console.log(body);
 
@@ -98,10 +98,10 @@ export class AuthService {
     formData.append("file", file )
     formData.append("body", JSONbody )
     
-    return this.http.post<any>(`${this.baseUrl}api/inscription/createInscription`, formData) 
+    return this.http.post<any>(`${this.baseUrl}api/user/createProfile`, formData) 
     
     .pipe(
-      tap( ( res) =>{console.log("from createInscription Service: ", res);  }  
+      tap( ( res) =>{console.log("from createProfile Service: ", res);  }  
       ),            
       map( (res: any) => res )
     )

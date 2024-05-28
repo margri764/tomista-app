@@ -272,6 +272,7 @@
     color: rgba(255, 255, 255, 0.6) !important;
     font-family: 'poppins-regular' !important;
 
+
     .mat-mdc-icon-button[disabled][disabled] {
       --mdc-icon-button-icon-color: rgba(255, 255, 255, 0.5) !important;
       --mdc-icon-button-disabled-icon-color: rgba(
@@ -332,7 +333,6 @@ html.dark-theme {
     font-family: 'poppins-regular' !important;
 
   }
-
   .mat-action-row {
     border-top-color: rgba(255, 255, 255, 0.12);
   }

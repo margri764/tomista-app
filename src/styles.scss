@@ -182,6 +182,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
     .ml-30{
       margin-left: 30px;
     }
+  
+    .ml-40{
+      margin-left: 40px;
+    }
     
     .mr-5{
       margin-right: 5px;
@@ -257,6 +261,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
       -moz-box-shadow: 0px 1px 8px 0px rgba(145,145,145,0.25);
     }
     
+    .error{
+      font-family: 'poppins-regular';
+      color: red;
+      font-size: 1em;
+      font-weight: 700;
+    }
   
     .icon{
       width: 40px;
@@ -496,6 +506,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
       
     }
   }  
+
   .custom-modal-verify  {
   
     .modal-dialog {
@@ -510,8 +521,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
     .modal-content {
       border-radius: 15px !important;
       max-width: 800px;
-      
     }
+  }  
+
+  .custom-modal-picture  {
+  
+    .modal-dialog {
+
+      padding: 10px;
+    }
+ 
   }  
   
   .custom-modal-uploadDoc  {
@@ -560,7 +579,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
   
   
     @media only screen and (max-width: 600px) {
-     
+
+ 
       .canvasWidth{
         width: 100%;
       }
