@@ -1,0 +1,62 @@
+
+<div class="table-container">
+
+  
+  <div class="customCard pd-10 table-container">
+    <mat-form-field  >
+      <mat-label>Buscar</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar">
+    </mat-form-field>
+  
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+  
+      <ng-container matColumnDef="img">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Img </th>
+        <td mat-cell *matCellDef="let element"> 
+            <img [src]="element.filePath | imagenPath" class="img-fluid" style="border-radius: 50%; width: 70px;" *ngIf="element.filePath && element.filePath !== ''"> 
+            <img src="assets/images/no-image.jpg" class="img-fluid" style="border-radius: 50%; width: 70px;" *ngIf="!element.filePath || element.filePath === ''"> 
+        </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nome Completo </th>
+        <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="address">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Endereço </th>
+        <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="conference">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Congresso </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="paymentOption">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Pagamento </th>
+        <td mat-cell *matCellDef="let element"> {{element.paymentOption}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="paymentStatus">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+        <td mat-cell *matCellDef="let element" [ngStyle]="(element.paymentStatus === 'pending') ? {'color':'brown'}:{'color':'green'} "> <b>{{element.paymentStatus | paymentStatus}}</b> </td>
+      </ng-container>
+  
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  <br>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>
+
+  <div class="loading-overlay" *ngIf="isLoading">
+  <div class="spinner-grow " role="status" style="width: 50px; height: 50px;"  >
+    <mat-spinner></mat-spinner>
+  </div>
+</div> 
+
+
+  

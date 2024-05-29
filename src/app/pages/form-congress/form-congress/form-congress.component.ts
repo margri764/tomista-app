@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Observable, Subject, delay } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, delay } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { AuthService } from 'src/app/services/auth.service';
 import { ErrorService } from 'src/app/services/error.service';
@@ -15,6 +15,9 @@ import { ConsentComponent } from '../../modals/consent/consent/consent.component
 import { MatTabGroup } from '@angular/material/tabs';
 import { PaymentService } from 'src/app/services/payment.service';
 import { ImagenPathPipe } from 'src/app/pipe/imagen-path.pipe';
+import { MoreInfoComponent } from "../../more-info/more-info/more-info.component";
+import Swal from 'sweetalert2';
+
 
 
 interface User {
@@ -32,13 +35,14 @@ interface User {
     standalone: true,
     templateUrl: './form-congress.component.html',
     styleUrl: './form-congress.component.scss',
-    imports: [CommonModule, MaterialModule, ReactiveFormsModule, TablerIconsModule, ImagenPathPipe]
+    imports: [CommonModule, MaterialModule, ReactiveFormsModule, TablerIconsModule, ImagenPathPipe, MoreInfoComponent]
 })
 
 export class FormCongressComponent {
 
   @ViewChild('fileUploader') fileUploader: ElementRef;
   @ViewChild('top') top: ElementRef;
+  @ViewChild('topMain') topMain: ElementRef;
   @ViewChild(MatTabGroup) tabGroup: MatTabGroup;
 
   changeTab(index: number): void {
@@ -56,7 +60,7 @@ export class FormCongressComponent {
   passwordForm! : FormGroup;
   user : any;
   selectedImg : File | null = null;
-  pathImg :any;
+  pathImg : string | null;
   isLoading : boolean = false;
   passwordVisible = false;
   confirmVisible = false;
@@ -82,10 +86,12 @@ export class FormCongressComponent {
     { 
       (screen.width < 800) ? this.phone = true : this.phone = false;
     }
+    
+    
+    
+    ngOnInit(): void {
 
-
-
-  ngOnInit(): void {
+   
 
 
       this.errorService.closeIsLoading$.pipe(delay(700)).subscribe( (emitted) => { if(emitted){this.isLoading = false}});
@@ -120,10 +126,8 @@ export class FormCongressComponent {
 
 
    checkIfUserExist(){
-
      
      let userSS = getDataSS('user');
-     
      
      if(userSS){
        this.paymentService.getUserByEmail(userSS.email).subscribe(
@@ -139,6 +143,8 @@ export class FormCongressComponent {
               this.user = userSS;
           }
         })
+     }else{
+
      }
 
     //  const fullName = this.myForm.get('fullName')?.value;
@@ -185,9 +191,8 @@ export class FormCongressComponent {
       payment : (this.payment) ? this.payment.paymentOption : null
     })
 
-
-
     this.pathImg = user.filePath;
+    
   }
 
   onSave() {
@@ -197,24 +202,32 @@ export class FormCongressComponent {
       return;
     }
 
-    if (!this.selectedImg) {
-      this.warningToast('Su foto de perfil es obligatoria')
-      return
+
+
+    console.log(this.selectedImg, this.pathImg );
+    
+
+    if (!this.selectedImg && !this.pathImg  ) {
+      this.warningToast('Sua foto de perfil é obrigatória');
+      return;
     } 
 
-    this.changeTab(1);
-
-    const body = {
+    let body = {
       ...this.myForm.value,
       email: this.user.email
      }
 
+     if(!this.selectedImg){
+      body = { ...body, filePath: this.pathImg }
+    }
+    
      const { confirm, age, consent, conditions, ...bodyWithout } = body;
 
     this.isLoading = true;
     this.authService.createProfile(bodyWithout, this.selectedImg).subscribe(
       ( {success} )=>{
         if(success){
+          this.changeTab(1);
 
           this.myFormPayment.patchValue({
             fullNamePayment : this.myForm.get('fullName')?.value,
@@ -242,26 +255,33 @@ export class FormCongressComponent {
     }
 
     const body = {
-      email: this.myFormPayment.get('emailPayment')?.value,
       fullName: this.myFormPayment.get('fullNamePayment')?.value,
       paymentOption: this.myFormPayment.get('payment')?.value,
       price: this.myFormPayment.get('price')?.value,
       cpf: this.myFormPayment.get('cpf')?.value,
+      email: this.myFormPayment.get('emailPayment')?.value,
      }
+
 
     this.isLoading = true;
     this.paymentService.createPayment(body).subscribe(
       ( {success} )=>{
         if(success){
           setTimeout(()=>{  
-            this.successToast('Formulario salvo com sucesso');
+            this.showSuccessAlert('Sua fatura foi enviada com sucesso','Verifique seu e-mail');
             this.isLoading = false;
+            this.blockPayment = true;
           },1000)
         }
       });
-    
+  }
 
-  
+  showSuccessAlert(title:string, subtitle : string){
+    Swal.fire({
+      title: title,
+      text:subtitle,
+      icon: "success"
+    });
   }
 
   checkCPF() {
@@ -344,6 +364,17 @@ export class FormCongressComponent {
     )
   }
 
+  goToTopMain(){
+    setTimeout( () => {
+      this.topMain.nativeElement.scrollIntoView(
+      { 
+        alignToTop: true,
+        block: "center",
+      });
+     }
+    )
+  }
+
   base64ToFile(base64: string, filename: string): File {
     const arr : any [] = base64.split(',');
     const mime = arr[0].match(/:(.*?);/)[1];
@@ -392,8 +423,9 @@ export class FormCongressComponent {
       titleClass: 'title-toast'
     });
   }
+
   warningToast( msg:string){
-    this.toastr.success(msg, 'Sucesso!!', {
+    this.toastr.warning(msg, 'Sucesso!!', {
       positionClass: 'toast-bottom-right', 
       timeOut: 3500, 
       messageClass: 'message-toast',

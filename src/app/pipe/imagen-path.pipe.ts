@@ -14,8 +14,7 @@ export class ImagenPathPipe implements PipeTransform {
 
       if(imagen.startsWith('/var/www')){
         const fileName = imagen.split('/').pop();
-        // const serverURL = 'https://arcanjosaorafael.org/bankAccount/';
-        const serverURL = 'https://congressovirgofloscarmeli.org/profilePicture/';
+        const serverURL = 'https://congressovirgofloscarmeli.org/profileTomista/';
         return `${serverURL}${fileName}`;
       }else{
         return imagen;

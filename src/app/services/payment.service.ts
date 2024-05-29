@@ -1,15 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { EventEmitter, Injectable } from '@angular/core';
+import {  Injectable } from '@angular/core';
 import { map, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import Swal from 'sweetalert2';
-import { saveDataSS } from '../storage';
-import { ErrorService } from './error.service';
-import { CookieService } from 'ngx-cookie-service';
+
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
+
 })
+
 
 export class PaymentService {
 
@@ -21,7 +20,6 @@ export class PaymentService {
 
   constructor(
                 private http : HttpClient,
-                private errorService : ErrorService,
              ) 
   {
 
@@ -31,14 +29,26 @@ export class PaymentService {
 
   createPayment( body:any ){
 
-    return this.http.post<any>(`${this.baseUrl}api/payment/createPayment`, body) 
-    
-    .pipe(
-      tap( ( res) =>{console.log("from createPayment Service: ", res);  }  
-      ),            
-      map( (res: any) => res )
-    )
-  }
+ 
+  return this.http.post<any>(`${this.baseUrl}api/payment/createPayment`, body) 
+  
+  .pipe(
+    tap( ( res) =>{console.log("from createPayment Service: ", res);  }  
+    ),            
+    map( (res: any) => res )
+  )
+}
+getAllPayments(  ){
+
+ 
+  return this.http.get<any>(`${this.baseUrl}api/payment/getAllPayments`) 
+  
+  .pipe(
+    tap( ( res) =>{console.log("from getAllPayments Service: ", res);  }  
+    ),            
+    map( (res: any) => res )
+  )
+}
 
   getUserByEmail( email:any ){
 

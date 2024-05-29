@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MaterialModule } from '../../../material.module';
 
 @Component({
@@ -8,4 +8,10 @@ import { MaterialModule } from '../../../material.module';
   imports: [RouterModule, MaterialModule],
   templateUrl: './error.component.html',
 })
-export class AppErrorComponent {}
+export class AppErrorComponent {
+
+  constructor(
+              private router : Router
+            )
+  {}
+}

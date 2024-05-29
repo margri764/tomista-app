@@ -89,14 +89,12 @@ export class AuthService {
     )
   }
 
-  createProfile( body:any, file : File  ){
-
-    console.log(body);
+  createProfile( body:any, file : any  ){
 
     const JSONbody = JSON.stringify(body)
     const formData = new FormData();
-    formData.append("file", file )
-    formData.append("body", JSONbody )
+    formData.append('file', file )
+    formData.append('body', JSONbody )
     
     return this.http.post<any>(`${this.baseUrl}api/user/createProfile`, formData) 
     

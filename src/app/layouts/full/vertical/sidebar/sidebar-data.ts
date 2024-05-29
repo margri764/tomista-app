@@ -6,9 +6,9 @@ export const navItems: NavItem[] = [
   },
  
   {
-    displayName: 'Email',
-    iconName: 'mail',
-    route: 'apps/email/inbox',
+    displayName: 'Registrados',
+    iconName: 'user',
+    route: 'painel/registrados',
   },
  
   {

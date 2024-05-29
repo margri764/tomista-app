@@ -77,7 +77,7 @@ export class AppSideLoginComponent implements OnInit {
             if(user.role === "user"){
               this.router.navigate(['/formulario']);
             }else if(user.role === "admin"){
-              this.router.navigate(['/dashboards/dashboard1']);
+              this.router.navigateByUrl('/painel');
             }
           }, 1000)
 

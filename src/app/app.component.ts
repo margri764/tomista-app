@@ -36,7 +36,8 @@ export class AppComponent implements OnInit {
               this.router.navigateByUrl('dashboards/dashboard1');
               saveDataSS('session', 'true')
             }else if(message === 'Token válido.' && user.role === 'user'){
-              
+              saveDataSS('user', user )
+              this.router.navigateByUrl('formulario');
             }
           })
     }
