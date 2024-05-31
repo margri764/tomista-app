@@ -162,7 +162,7 @@
                                                 <p> Acesso às áreas de exposição e à Basília N. Sra. do Rosário.</p>
                                                 <p> Lanche da manhã (coffee break) e almoço nos dias 6 e 7 de agosto</p>
                                                 <p>Certificado de participação, havendo efetiva participação do Congresso. </p>
-                                                <p>Para concelebrar nas Santas Missa, pede-se aos clérigos que levem sua própria alba e cíngulo.</p>
+                                                <p>(*) Para concelebrar nas Santas Missas, pede-se aos clérigos que levem sua própria alva e cíngulo.</p>
                                                 </mat-card-content>
                                             
                                             </mat-card>
@@ -212,8 +212,15 @@
                                             </div>
 
                                             <div >
+                                                <mat-checkbox  color="primary" formControlName="privacy" (change)="openDialogPrivacy()">
+                                                <span class="font fs-10" > <b>Leia o aviso de privacidade antes de continuar</b></span>
+                                                </mat-checkbox>
+                                                <span class="w-100 error ml-40"  *ngIf="myForm.get('privacy')?.touched && myForm.get('privacy')?.errors?.['required']">  Campo requerido.</span>
+                                            </div>
+
+                                            <div >
                                                 <mat-checkbox  color="primary" formControlName="consent" (change)="openDialogConsent()">
-                                                <span class="font fs-10" > <b>Por favor, lea el Aviso Legal antes de continuar</b></span>
+                                                <span class="font fs-10" > <b>Por favor, leia el Aviso Legal antes de continuar</b></span>
                                                 </mat-checkbox>
                                                 <span class="w-100 error ml-40"  *ngIf="myForm.get('consent')?.touched && myForm.get('consent')?.errors?.['required']">  Campo requerido.</span>
                                             </div>
@@ -345,11 +352,11 @@
 
                         <div class="mt-40">
                             <mat-radio-group formControlName="payment" >
-                                <mat-radio-button class="example-margin" value="iugu" [checked]="myFormPayment.get('payment')?.value === 'iugu'">
-                                    <img src="assets/images/logos/iugu.png" alt="logo iugu" width="100px">
+                                <mat-radio-button class="example-margin" value="iugu" [checked]="myFormPayment.get('payment')?.value === 'iugu'"  [disabled]="blockPayment">
+                                    <img src="assets/images/logos/iugu.png" alt="logo iugu" width="100px" class="cursor">
                                 </mat-radio-button> &nbsp; &nbsp;
                                 <mat-radio-button class="example-margin" value="paypal" [checked]="myFormPayment.get('payment')?.value === 'paypal'" [disabled]="blockPayment">
-                                    <img src="assets/images/logos/paypal.png" alt="logo paypal" width="150px">
+                                    <img src="assets/images/logos/paypal.png" alt="logo paypal" width="150px" class="cursor">
                                 </mat-radio-button>
                             
                             </mat-radio-group>

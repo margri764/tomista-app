@@ -1,13 +1,25 @@
 
+
 <div class="table-container">
 
   
   <div class="customCard pd-10 table-container">
-    <mat-form-field  >
-      <mat-label>Buscar</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar">
-    </mat-form-field>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-10">
+        <mat-form-field  >
+          <mat-label>Buscar</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar">
+        </mat-form-field>
+
+      <div class="d-flex justify-content-between align-items-center ">
+        <button  mat-flat-button (click)="orderStatus('all')" style="background-color: rgb(0, 132, 255); color: white;">
+          <span class="material-symbols-outlined" style="margin-top: 5px;" > autorenew </span> 
+        </button> 
+        <button  mat-flat-button  (click)="orderStatus('paid')" style="background-color: green; color: white; margin-left: 10px;"> Pago </button>
+        <button  mat-flat-button  (click)="orderStatus('pending')" style="margin-left: 10px; background-color: brown; color: white;"> Pendente </button>
+      </div>
   
+    </div>
     <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
   
       <ng-container matColumnDef="img">
@@ -18,7 +30,7 @@
         </td>
       </ng-container>
   
-      <ng-container matColumnDef="name">
+      <ng-container matColumnDef="fullName">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Nome Completo </th>
         <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
       </ng-container>
@@ -41,6 +53,34 @@
       <ng-container matColumnDef="paymentStatus">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
         <td mat-cell *matCellDef="let element" [ngStyle]="(element.paymentStatus === 'pending') ? {'color':'brown'}:{'color':'green'} "> <b>{{element.paymentStatus | paymentStatus}}</b> </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header > Ação </th>
+        <td mat-cell *matCellDef="let element" > 
+
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <div class="d-flex align-items-center optionHover" style="margin-top: 10px; padding: 5px;" (click)="onActionSelected('refund', element)">
+              <span class="material-icons"> money_off </span> &nbsp;
+              <span>Reembolsar</span>
+            </div>
+
+            <div class="d-flex align-items-center optionHover" style="margin-top: 10px; padding: 5px;" (click)="onActionSelected('remove', element)">
+              <span class="material-icons"> delete </span> &nbsp;
+              <span>Eliminar</span>
+            </div>
+          
+          </mat-menu>
+   
+        <!-- <mat-select  [(value)]="element.role" (selectionChange)="onActionSelected($event.value, element)" [ngStyle]="phone ? {'width':'120px'}:{ 'width':'110px'}" class="font fs-12">
+          @for (action of actionList; track action) {
+            <mat-option [value]="action"  > {{action}} </mat-option>
+          }
+        </mat-select>  -->
+        </td>
       </ng-container>
   
   

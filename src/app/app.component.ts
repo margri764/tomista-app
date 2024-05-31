@@ -1,22 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
 import { getDataSS, saveDataSS } from './storage';
+import { Subscription } from 'rxjs';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { CookieConsentComponent } from './pages/cookie-consent/cookie-consent/cookie-consent.component';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
+  
 })
 
 export class AppComponent implements OnInit {
 
   title = 'Modernize Angular Admin Tempplate';
-
+  
   constructor(
               private cookieService : CookieService,
               private authService : AuthService,
-              private router : Router
+              private router : Router,
+              private _bottomSheet: MatBottomSheet,
+
              )
   
   {
@@ -25,6 +32,7 @@ export class AppComponent implements OnInit {
   
   ngOnInit(): void {
 
+    this.initCookies()
   const token = this.cookieService.get('token');
   const session = getDataSS('session')
 
@@ -42,6 +50,25 @@ export class AppComponent implements OnInit {
           })
     }
 
+   
+
   }
+
+ initCookies(): void {
+    const consent = this.cookieService.get('CookieConsent');
+    console.log(consent);
+    if (consent === 'accepted') {
+      this.cookieService.set('NonEssentialCookie', 'value', 365, '/'); // Set non-essential cookies
+    }else if(!consent){
+      this._bottomSheet.open(CookieConsentComponent),{
+        panelClass: 'full-screen-bottom-sheet'
+      };
+
+    
+    }
+  }
+
+
+
 
 }

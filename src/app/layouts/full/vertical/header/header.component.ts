@@ -17,6 +17,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ErrorService } from 'src/app/services/error.service';
+import { ImagenPathPipe } from "../../../../pipe/imagen-path.pipe";
+import { getDataSS } from 'src/app/storage';
 
 
 interface notifications {
@@ -49,11 +51,11 @@ interface quicklinks {
 }
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [RouterModule, CommonModule, NgScrollbarModule, TablerIconsModule, MaterialModule],
-  templateUrl: './header.component.html',
-  encapsulation: ViewEncapsulation.None,
+    selector: 'app-header',
+    standalone: true,
+    templateUrl: './header.component.html',
+    encapsulation: ViewEncapsulation.None,
+    imports: [RouterModule, CommonModule, NgScrollbarModule, TablerIconsModule, MaterialModule, ImagenPathPipe]
 })
 export class HeaderComponent {
 
@@ -64,6 +66,7 @@ export class HeaderComponent {
   @Output() toggleCollapsed = new EventEmitter<void>();
 
   showFiller = false;
+  user: any;
 
   public selectedLanguage: any = {
     language: 'English',
@@ -101,8 +104,16 @@ export class HeaderComponent {
     public dialog: MatDialog,
     private translate: TranslateService,
     private errorService : ErrorService
-  ) {
-    translate.setDefaultLang('en');
+  )
+  
+  {
+    const user = getDataSS('user');
+    if(user){
+      this.user = user;
+    }
+     
+        translate.setDefaultLang('en');
+
   }
 
   openDialog() {

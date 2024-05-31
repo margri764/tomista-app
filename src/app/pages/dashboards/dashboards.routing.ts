@@ -4,25 +4,22 @@ import { Routes } from '@angular/router';
 import { AppDashboard1Component } from './dashboard1/dashboard1.component';
 import { FormCongressComponent } from '../form-congress/form-congress/form-congress.component';
 import { ParticipantsComponent } from '../participants/participants/participants.component';
+import { ConferenceComponent } from '../conference/conference/conference.component';
+import { UserComponent } from '../user/user/user.component';
 
 export const DashboardsRoutes: Routes = [
   {
     path: '',
     children: [
       {
-        path: 'registrados', component: ParticipantsComponent,  data: { title: 'Registrados' },
+        path: 'congressos', component: ConferenceComponent,  data: { title: 'Congressos' },
       },
-      // {
-      //   path: 'dashboard1',component: AppDashboard1Component,
-      //   data: {
-      //     title: 'Analytical',
-      //     urls: [
-      //       { title: 'Dashboard', url: '/dashboards/dashboard1' },
-      //       { title: 'Analytical' },
-      //     ],
-      //   },
-      // },
-     
+      {
+        path: 'registrados/:id', component: ParticipantsComponent,  data: { title: 'Registrados' },
+      },
+      {
+        path: 'usuarios', component: UserComponent,  data: { title: 'Usuários' },
+      },
     ],
   },
 ];

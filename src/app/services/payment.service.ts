@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {  Injectable } from '@angular/core';
+import {  EventEmitter, Injectable } from '@angular/core';
 import { map, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 
 export class PaymentService {
 
-  // closeLoginWebmaster$ : EventEmitter<boolean> = new EventEmitter<boolean>; 
+  authPaymentAction$ : EventEmitter<boolean> = new EventEmitter<boolean>; 
 
   // user! : User;
   user! : any;
@@ -27,7 +27,7 @@ export class PaymentService {
 
 
 
-  createPayment( body:any ){
+createPayment( body:any ){
 
  
   return this.http.post<any>(`${this.baseUrl}api/payment/createPayment`, body) 
@@ -56,6 +56,29 @@ getAllPayments(  ){
     
     .pipe(
       tap( ( res) =>{console.log("from getUserByEmail Service: ", res);  }  
+      ),            
+      map( (res: any) => res )
+    )
+  }
+
+  refundInvoice( body:any ){
+
+ 
+    return this.http.post<any>(`${this.baseUrl}api/payment/refundPayment`, body) 
+    
+    .pipe(
+      tap( ( res) =>{console.log("from refoundInvoice Service: ", res);  }  
+      ),            
+      map( (res: any) => res )
+    )
+  }
+
+  deletePayment( id:any ){
+ 
+    return this.http.delete<any>(`${this.baseUrl}api/payment/deletePayment/${id}`,) 
+    
+    .pipe(
+      tap( ( res) =>{console.log("from deletePayment Service: ", res);  }  
       ),            
       map( (res: any) => res )
     )

@@ -53,6 +53,7 @@ export function HttpLoaderFactory(http: HttpClient): any {
     NgScrollbarModule,
     FullComponent,
     ToastrModule.forRoot(),
+
   ],
   providers:[
     {

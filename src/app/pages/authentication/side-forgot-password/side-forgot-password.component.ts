@@ -21,6 +21,7 @@ export class AppSideForgotPasswordComponent implements OnInit {
   options = this.settings.getOptions();
   isLoading : boolean = false;
   showLabel : boolean = false;
+  phone : boolean = false;
 
   constructor(
                 private settings: CoreService, 
@@ -31,6 +32,7 @@ export class AppSideForgotPasswordComponent implements OnInit {
 
               ) 
   {
+    (screen.width < 800) ? this.phone = true : this.phone = false;
 
 
    }

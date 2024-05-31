@@ -47,7 +47,7 @@ export class AuthService {
             this.notAnswer = false;
             if(success ){
               this.user = user;
-              const userToSS = { name: user.Nome_Completo, role:user.role, email: user.email,};
+              const userToSS = { name: user.fullName, role:user.role, email: user.email, filePath: user.filePath};
               saveDataSS('user', userToSS);
               saveDataSS('session', "true");
 
@@ -100,6 +100,28 @@ export class AuthService {
     
     .pipe(
       tap( ( res) =>{console.log("from createProfile Service: ", res);  }  
+      ),            
+      map( (res: any) => res )
+    )
+  }
+
+  getAllUsers(){
+
+    return this.http.get<any>(`${this.baseUrl}api/user/getAllUsers`) 
+    
+    .pipe(
+      tap( ( res) =>{console.log("from getAllUsers Service: ", res);  }  
+      ),            
+      map( (res: any) => res )
+    )
+  }
+
+  changeRole( id:any, body:any){
+
+    return this.http.patch<any>(`${this.baseUrl}api/user/changeRole/${id}`, body) 
+    
+    .pipe(
+      tap( ( res) =>{console.log("from changeRole Service: ", res);  }  
       ),            
       map( (res: any) => res )
     )

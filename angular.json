@@ -31,7 +31,9 @@
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/angular-calendar/css/angular-calendar.css"
             ],
-            "scripts": []
+            "scripts": [
+          
+            ]
           },
           "configurations": {
             "production": {

@@ -11,24 +11,16 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
 import { TakePictureModalComponent } from '../../modals/take-picture-modal/take-picture-modal/take-picture-modal.component';
-import { ConsentComponent } from '../../modals/consent/consent/consent.component';
+import { ConsentModalComponent } from '../../modals/consent-modal/consent-modal/consent-modal.component';
 import { MatTabGroup } from '@angular/material/tabs';
 import { PaymentService } from 'src/app/services/payment.service';
 import { ImagenPathPipe } from 'src/app/pipe/imagen-path.pipe';
 import { MoreInfoComponent } from "../../more-info/more-info/more-info.component";
 import Swal from 'sweetalert2';
+import { PrivacyModalComponent } from '../../modals/privacy-modal/privacy-modal/privacy-modal.component';
 
 
 
-interface User {
-    fullName: string,
-    address: string;
-    phone: string;
-    profession: string;
-    email: string;
-    filePath: string,
-    payment : string
-}
 
 @Component({
     selector: 'app-form-congress',
@@ -95,6 +87,7 @@ export class FormCongressComponent {
 
 
       this.errorService.closeIsLoading$.pipe(delay(700)).subscribe( (emitted) => { if(emitted){this.isLoading = false}});
+      this.errorService.repitedPayment$.subscribe( (emitted) => { if(emitted){this.blockPayment = true}});
 
       this.checkIfUserExist();
 
@@ -107,6 +100,7 @@ export class FormCongressComponent {
         conditions:  new FormControl(false, [Validators.requiredTrue]),
         age:  new FormControl(false, [Validators.requiredTrue]),
         consent:  new FormControl(false, [Validators.requiredTrue]),
+        privacy:  new FormControl(false, [Validators.requiredTrue]),
        
       });
       
@@ -160,7 +154,7 @@ export class FormCongressComponent {
     return this.myFormPayment.controls;
   }
 
-  setUserData( user:User ){
+  setUserData( user:any ){
 
     this.isEditing = true;
 
@@ -174,24 +168,40 @@ export class FormCongressComponent {
 
     }  
 
-    this.myForm.patchValue({
-      fullName : user.fullName,
-      email : user.email,
-      address: user.address,
-      phone : user.phone,
-      profession : user.profession,
-      conditions:  true,
-      age:  true,
-      consent:  true,
-    })
+    //en el primer login todavia no se creo el perfil
+    if(!user.noProfileYet){
+      this.myForm.patchValue({
+        fullName : user.fullName,
+        email : user.email,
+        address: user.address,
+        phone : user.phone,
+        profession : user.profession,
+        conditions:  true,
+        age:  true,
+        consent:  true,
+        privacy:  true,
+      })
+  
+      this.myFormPayment.patchValue({
+        fullNamePayment : user.fullName,
+        emailPayment : user.email,
+        payment : (this.payment) ? this.payment.paymentOption : null
+      })
+  
+      this.pathImg = user.filePath;
 
-    this.myFormPayment.patchValue({
-      fullNamePayment : user.fullName,
-      emailPayment : user.email,
-      payment : (this.payment) ? this.payment.paymentOption : null
-    })
+    }else{
+      this.myForm.patchValue({
+        email : user.email,
+      })
+  
+      this.myFormPayment.patchValue({
+        emailPayment : user.email,
+      })
 
-    this.pathImg = user.filePath;
+    }
+
+   
     
   }
 
@@ -203,14 +213,10 @@ export class FormCongressComponent {
     }
 
 
-
-    console.log(this.selectedImg, this.pathImg );
-    
-
-    if (!this.selectedImg && !this.pathImg  ) {
-      this.warningToast('Sua foto de perfil é obrigatória');
-      return;
-    } 
+    // if (!this.selectedImg && !this.pathImg  ) {
+    //   this.warningToast('Sua foto de perfil é obrigatória');
+    //   return;
+    // } 
 
     let body = {
       ...this.myForm.value,
@@ -221,7 +227,7 @@ export class FormCongressComponent {
       body = { ...body, filePath: this.pathImg }
     }
     
-     const { confirm, age, consent, conditions, ...bodyWithout } = body;
+     const { confirm, age, consent, conditions, privacy, ...bodyWithout } = body;
 
     this.isLoading = true;
     this.authService.createProfile(bodyWithout, this.selectedImg).subscribe(
@@ -333,11 +339,29 @@ export class FormCongressComponent {
     });
   }
 
+  openDialogPrivacy() {
+
+    setTimeout(()=>{ this.myForm.get('privacy')?.setValue(null) }, 100)
+
+    const dialogRef = this.dialog.open(PrivacyModalComponent,{
+      disableClose: true, 
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+
+      if(result){
+        this.myForm.get('privacy')?.setValue(true);
+      }else{
+      }
+     
+    });
+  }
+
   openDialogConsent() {
 
     setTimeout(()=>{ this.myForm.get('consent')?.setValue(null) }, 100)
 
-    const dialogRef = this.dialog.open(ConsentComponent,{
+    const dialogRef = this.dialog.open(ConsentModalComponent,{
       disableClose: true, 
     });
 
@@ -345,9 +369,6 @@ export class FormCongressComponent {
 
       if(result){
         this.myForm.get('consent')?.setValue(true);
-        this.consent = true;
-      }else{
-        this.consent = false;
       }
      
     });

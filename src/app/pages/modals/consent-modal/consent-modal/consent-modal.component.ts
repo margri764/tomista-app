@@ -6,9 +6,9 @@ import { MaterialModule } from 'src/app/material.module';
   selector: 'app-consent',
   standalone: true,
   imports: [CommonModule, MaterialModule],
-  templateUrl: './consent.component.html',
-  styleUrl: './consent.component.scss'
+  templateUrl: './consent-modal.component.html',
+  styleUrl: './consent-modal.component.scss'
 })
-export class ConsentComponent {
+export class ConsentModalComponent {
 
 }

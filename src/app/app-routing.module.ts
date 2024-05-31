@@ -8,7 +8,7 @@ import { AppErrorComponent } from './pages/authentication/error/error.component'
 
 const routes: Routes = [
   {
-    path: 'painel', component: FullComponent,
+    path: 'painel', component: FullComponent, data: { title: 'Painel' },
     children: [
       {
         path: '',

@@ -10,9 +10,10 @@ import { CoreService } from 'src/app/services/core.service';
       @if(options.theme === 'light') {
       <a href="/">
         <img
-          src="./assets/images/logos/dark-logo.svg"
+          src="./assets/images/logo-tomista-banner.jpg"
           class="align-middle m-2"
           alt="logo"
+          width="100%"
         />
       </a>
       } @if(options.theme === 'dark') {

@@ -42,6 +42,7 @@ export class ErrorService {
   status429Error$ : EventEmitter<response> = new EventEmitter<response>; 
   status500Error$ : EventEmitter<response> = new EventEmitter<response>; 
   status400VerifyError$ : EventEmitter<boolean> = new EventEmitter<boolean>; 
+  repitedPayment$ : EventEmitter<boolean> = new EventEmitter<boolean>; 
   status401Credentials$ : EventEmitter<response401Credentials> = new EventEmitter<response401Credentials>; 
   status401WronCode$ : EventEmitter<response> = new EventEmitter<response>; 
   backIsDown$ : EventEmitter<response> = new EventEmitter<response>; 
@@ -211,11 +212,19 @@ if (error.status === 500 && error.error.error === 'Ocorreu um erro fora do nosso
       return of(null);
     }
 
+
+
+    if (error.status === 400 && error.error.message === "E-mail já em uso. Por favor, escolha um diferente" ) {
+     this.closeIsLoading$.emit(true);
+     this.errorToast(error.error.message)
+      return of(null);
+    }
+
     
-    if (error.status === 400 && error.error.message === "A nova conta de e-mail já está em uso por outro usuário" ) {
+    if (error.status === 400 && error.error.message.includes("Repita o pagamento" )) {
       this.closeIsLoading$.emit(true);
-      this.errorToast("A nova conta de e-mail já está em uso por outro usuário");
-      //  this.status400Error$.emit({emmited:true, msg: error.error.message });
+       this.repitedPayment$.emit(true);
+       this.errorToast(error.error.message)
        return of(null);
      }
     

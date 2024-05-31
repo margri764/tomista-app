@@ -21,6 +21,7 @@ export class AppSideRegisterComponent {
   options = this.settings.getOptions();
   showLabel : boolean = false;
   isLoading : boolean = false;
+  phone : boolean = false;
 
   constructor(
                 private settings: CoreService, 
@@ -31,6 +32,8 @@ export class AppSideRegisterComponent {
                 
              )
   {
+  (screen.width < 800) ? this.phone = true : this.phone = false;
+
     this.errorService.closeIsLoading$.pipe(delay(700)).subscribe( (emitted) => { if(emitted){this.isLoading = false}});
 
    }
@@ -52,7 +55,8 @@ export class AppSideRegisterComponent {
         if(success){
           this.showLabel = true;
           this.isLoading = false;
-          // this.router.navigate(['/dashboards/dashboard1']);
+          // setTimeout(()=>{this.router.navigate(['/login'])}, 4500)
+          
         }
       })
 
