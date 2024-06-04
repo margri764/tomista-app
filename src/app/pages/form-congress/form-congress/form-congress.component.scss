@@ -39,3 +39,15 @@
     color: red;
   }
 
+  .header{
+    background-color: whitesmoke; 
+    padding: 10px; 
+    height: 100px; 
+    border-bottom: 4px solid rgb(210, 210, 210);  
+    margin-bottom: 30px;
+    
+    box-shadow: 5px 10px 17px 0px rgba(53,153,153, 0.60);
+    -webkit-box-shadow: 5px 10px 17px 0px rgba(153,153,153,0.60);
+    -moz-box-shadow: 5px 10px 17px 0px rgba(153,153,153,0.60); 
+  }
+

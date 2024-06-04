@@ -21,7 +21,6 @@ export class InterceptorService {
   
   
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('Interceptor is running');
     return next.handle( req.clone() )
     .pipe(
       catchError((error : HttpErrorResponse ) => this.errorHandle(error) )

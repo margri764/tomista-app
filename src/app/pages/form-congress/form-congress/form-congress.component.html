@@ -1,5 +1,17 @@
     
-<div class="d-flex justify-content-center w-100" >
+<div #display></div>
+
+
+ <mat-toolbar class="d-flex justify-content-between  header" *ngIf="phone" >
+    <img src="assets/images/logos/congresso.png"  class="img-fluid" style="width: 65px;">
+</mat-toolbar>
+
+<div class="d-flex justify-content-start align-items-center ml-10" (click)="goBack()"  *ngIf="phone" >
+    <span class="material-icons"> arrow_back_ios </span>
+    <span class="font fs-12 selected">Regresar</span>
+</div>
+
+<div class="d-flex justify-content-center w-100"  >
     
     <div class="col-sm-12 col-xs-12 col-md-10">
         
@@ -7,8 +19,8 @@
             
             <mat-card-content class="p-0" >
                 
-                <mat-tab-group mat-stretch-tabs="false" animationDuration="0ms" #tabGroup>
-                    <mat-tab>
+             <mat-tab-group mat-stretch-tabs="false" animationDuration="0ms" #tabGroup>
+                <mat-tab *ngIf="showTab0 || !phone">
                         <ng-template mat-tab-label>
                             <div class="d-flex align-items-center">
                                 <mat-icon>
@@ -18,7 +30,7 @@
                             Conta
                         </ng-template>
                  <mat-card-content class="p-y-24 b-t-1" style="margin-top: 30px;" >
-                 <form [formGroup]="myForm" class="m-t-24" autocomplete="off" >
+                 <form [formGroup]="myForm" class="m-t-24" autocomplete="off">
                     <div #topMain></div>
                     <div class="row">
                         <div class="col-sm-12 col-xs-12 col-md-6">
@@ -97,7 +109,7 @@
                                             </mat-form-field>
                                         </div>
 
-                                        <div class="col-sm-12 col-xs-12 col-md-12" style="font-family: poppins-regular !important;">
+                                        <div class="col-sm-12 col-xs-12 col-md-12" >
                                             <mat-label class="mat-subtitle-2 f-w-600 m-b-8 d-block">Telefone</mat-label>
                                             <mat-form-field appearance="outline" class="w-100" color="primary" >
                                             <input matInput type="text" formControlName="phone" style="font-family: poppins-regular !important;" />
@@ -109,8 +121,11 @@
                                                 </mat-hint>
                                                 }
                                             </mat-form-field>
+                                       </div>
                                     </div>
-                                        <div class="col-sm-12 col-xs-12 col-md-12" style="font-family: poppins-regular !important;">
+
+                                    <div class="row ">
+                                        <div class="col-sm-12 col-xs-12 col-md-6" >
                                             <mat-label class="mat-subtitle-2 f-w-600 m-b-8 d-block" style="font-family: poppins-regular !important;">Profissão</mat-label>
                                             <mat-form-field appearance="outline" class="w-100" color="primary" >
                                             <input matInput type="text" formControlName="profession" />
@@ -122,13 +137,29 @@
                                                 </mat-hint>
                                                 }
                                             </mat-form-field>
+                                        </div>    
+
+                                        <div class="col-sm-12 col-xs-12 col-md-6" >
+                                            <mat-label class="mat-subtitle-2 f-w-600 m-b-8 d-block" style="font-family: poppins-regular !important;">Aniversario</mat-label>
+                                            <mat-form-field appearance="outline" class="w-100" color="primary" >
+                                            <input matInput type="text" formControlName="anniversary" placeholder="dd/mm/aaaa" (blur)="onAnniversarySelected()" />
+                                            @if(f['anniversary'].touched && f['anniversary'].invalid) {
+                                                <mat-hint class="m-b-16 error-msg">
+                                                @if(f['anniversary'].errors && f['anniversary'].errors['required']) {
+                                                <div class="error"> Dado obrigatorio</div>
+                                                } 
+                                                <div class="error" *ngIf="myForm.get('anniversary')?.hasError('invalidDateFormat')">
+                                                    O formato é dd/mm/aaaa
+                                                  </div>
+                                                </mat-hint>
+                                                }
+                                            </mat-form-field>
+                                       
+                                        </div>
                                     </div>
-                                
-                                    </div>
-                                
+
                                 </mat-card-content>
                             </mat-card>
-                        
                         </div>
                     
                     </div>
@@ -196,34 +227,35 @@
                                         <div style="padding: 10px; margin-top: 20px;">
 
                                             <div>
-                                                <mat-checkbox  color="primary" formControlName="conditions">
-                                                    <span class="font fs-10"> <b> Declaro ter lido os termos e condições e concordo com eles </b>
+                                                <mat-checkbox  color="primary" formControlName="consent" (change)="openDialogConsent()">
+                                                    <span class="font fs-10"> <b> Declaro ter lido o aviso ñegal com os termos e condições e concordo com eles </b>
                                                     </span>
                                                 </mat-checkbox >
-                                                <span class="w-100 error ml-40" *ngIf="myForm.get('conditions')?.touched && myForm.get('conditions')?.errors?.['required']">  Campo requerido.</span>
+                                                <span class="w-100 error ml-40"  *ngIf="myForm.get('consent')?.touched && myForm.get('consent')?.errors?.['required']">  Campo requerido.</span>
                                             </div>
-
-                                            <div >
-                                                <mat-checkbox  color="primary" formControlName="age">
-                                                    <span class="font fs-10"> <b> Eu declaro ser maior de 18 anos.</b>
-                                                    </span>
-                                                </mat-checkbox >
-                                                <span class="w-100 error ml-40" *ngIf="myForm.get('age')?.touched && myForm.get('age')?.errors?.['required']">  Campo requerido.</span>
-                                            </div>
+                                           
 
                                             <div >
                                                 <mat-checkbox  color="primary" formControlName="privacy" (change)="openDialogPrivacy()">
-                                                <span class="font fs-10" > <b>Leia o aviso de privacidade antes de continuar</b></span>
+                                                <span class="font fs-10" > <b>Concordo com a política de uso de dados e privacidade</b></span>
                                                 </mat-checkbox>
                                                 <span class="w-100 error ml-40"  *ngIf="myForm.get('privacy')?.touched && myForm.get('privacy')?.errors?.['required']">  Campo requerido.</span>
                                             </div>
 
                                             <div >
+                                                <mat-checkbox  color="primary" formControlName="age" (change)="checkAge()">
+                                                    <span class="font fs-10"> <b> Eu declaro ser maior de 18 anos.</b>
+                                                    </span>
+                                                </mat-checkbox >
+                                                <span class="w-100 error ml-40" *ngIf="myForm.get('age')?.touched && myForm.get('age')?.errors?.['required']">  Campo requerido/maior de 18 anos</span>
+                                            </div>
+
+                                            <!-- <div >
                                                 <mat-checkbox  color="primary" formControlName="consent" (change)="openDialogConsent()">
                                                 <span class="font fs-10" > <b>Por favor, leia el Aviso Legal antes de continuar</b></span>
                                                 </mat-checkbox>
                                                 <span class="w-100 error ml-40"  *ngIf="myForm.get('consent')?.touched && myForm.get('consent')?.errors?.['required']">  Campo requerido.</span>
-                                            </div>
+                                            </div> -->
                                         
                                         </div>
                                 </div>
@@ -238,16 +270,20 @@
                             
                         </div>
                     </div>
+
                     <div class="text-right p-24 p-t-0">
-                        <button mat-flat-button color="primary" (click)="onSave()" >Enviar</button>
+                        <button mat-flat-button style="font-family: poppins-regular;" color="warn" (click)="logout()" >Encerrar sessão</button> &nbsp;
+                        <button mat-flat-button style="font-family: poppins-regular;" color="primary" (click)="onSave()" >Enviar</button>
                     </div>
+
+                 
 
                 </form>    
                     
                 </mat-card-content>
                 </mat-tab>
 
-                <mat-tab>
+                <mat-tab *ngIf="showTab1 || !phone" [disabled]="profileFirst">
                 <ng-template mat-tab-label>
                     <div class="d-flex align-items-center">
                     <mat-icon>
@@ -379,7 +415,7 @@
                 </mat-card-content>
                 </mat-tab>
 
-                <mat-tab>
+                <mat-tab *ngIf="showTab2 || !phone">
                     <ng-template mat-tab-label>
                         <div class="d-flex align-items-center">
                         <mat-icon>
@@ -394,11 +430,23 @@
                         <app-more-info></app-more-info>
     
                     </mat-card-content>
-                    </mat-tab>
+                </mat-tab>
+
+                <mat-tab *ngIf="!phone">
+                    <ng-template mat-tab-label>
+                        <div class="d-flex align-items-center" (click)="logout()">
+                            <mat-icon  >
+                                <i-tabler name="logout" class="icon-20 m-r-8"></i-tabler>
+                            </mat-icon>
+                            Sair
+                        </div>
+                    </ng-template>
+                
+                </mat-tab>
             
-            </mat-tab-group>
+             </mat-tab-group>
       
-        </mat-card-content>
+            </mat-card-content>
 
     </mat-card>
 

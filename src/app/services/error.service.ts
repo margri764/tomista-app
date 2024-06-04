@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
 import { CookieService } from 'ngx-cookie-service';
+import { MatDialog } from '@angular/material/dialog';
+import { ContactusModalComponent } from '../pages/authentication/modals/contactus-modal/contactus-modal/contactus-modal.component';
 
 interface response  {
   emmited: boolean,
@@ -50,7 +52,8 @@ export class ErrorService {
   constructor(
               private router : Router,
               public toastr: ToastrService,
-              private cookieService : CookieService
+              private cookieService : CookieService,
+              private dialog : MatDialog
 
 
   ) { 
@@ -145,6 +148,16 @@ export class ErrorService {
 
     if (error.status === 400 && error.error.message === 'Usuário não encontrado' ) {
       this.errorToast(error.error.message)
+      this.closeIsLoading$.emit(true);
+     return of(null);
+   }
+
+ 
+    if (error.status === 400 && error.error.message === 'Sua conta não está ativa.' ) {
+      this.errorToast(error.error.message);
+
+      this.showErrorSwal( "Restrição"  , "Sua conta não está ativa.","Entre em contato com um administrador")
+   
       this.closeIsLoading$.emit(true);
      return of(null);
    }
@@ -281,8 +294,8 @@ if (error.status === 500 && error.error.error === 'Ocorreu um erro fora do nosso
       allowOutsideClick: false,  
       allowEscapeKey: false,
     }).then((result) => {
-      if (result.isConfirmed && footer === 'Por favor, tente novamente mais tarde') {
-        // this.router.navigateByUrl('/login')
+      if (result.isConfirmed && footer === 'Entre em contato com um administrador') {
+        this.openDialogContactUs()
       }
     });
   }
@@ -293,6 +306,12 @@ if (error.status === 500 && error.error.error === 'Ocorreu um erro fora do nosso
       timeOut: 3500, 
       messageClass: 'message-toast',
       titleClass: 'title-toast'
+    });
+  }
+
+  openDialogContactUs() {
+    this.dialog.open(ContactusModalComponent, {
+      width: '500px',
     });
   }
  

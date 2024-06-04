@@ -19,6 +19,10 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ErrorService } from 'src/app/services/error.service';
 import { ImagenPathPipe } from "../../../../pipe/imagen-path.pipe";
 import { getDataSS } from 'src/app/storage';
+import { NotificationService } from 'src/app/services/notification.service';
+import { TypeNotificationPipe } from "../../../../pipe/type-notification.pipe";
+import { UserModalComponent } from 'src/app/pages/user-modal/user-modal/user-modal.component';
+import { TimeAgoNotificationPipe } from "../../../../pipe/time-ago-notification.pipe";
 
 
 interface notifications {
@@ -55,9 +59,9 @@ interface quicklinks {
     standalone: true,
     templateUrl: './header.component.html',
     encapsulation: ViewEncapsulation.None,
-    imports: [RouterModule, CommonModule, NgScrollbarModule, TablerIconsModule, MaterialModule, ImagenPathPipe]
+    imports: [RouterModule, CommonModule, NgScrollbarModule, TablerIconsModule, MaterialModule, ImagenPathPipe, TypeNotificationPipe, TimeAgoNotificationPipe]
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
 
   @Input() showToggle = true;
   @Input() toggleChecked = false;
@@ -67,6 +71,9 @@ export class HeaderComponent {
 
   showFiller = false;
   user: any;
+  arrNotifications: any []=[];
+  numberNotification : any;
+  phone : boolean = false;
 
   public selectedLanguage: any = {
     language: 'English',
@@ -100,13 +107,16 @@ export class HeaderComponent {
   ];
 
   constructor(
-    private vsidenav: CoreService,
-    public dialog: MatDialog,
-    private translate: TranslateService,
-    private errorService : ErrorService
+              private vsidenav: CoreService,
+              public dialog: MatDialog,
+              private translate: TranslateService,
+              private errorService : ErrorService,
+              private notificationService : NotificationService
   )
   
   {
+
+    (screen.width < 800) ? this.phone = true : this.phone = false;
     const user = getDataSS('user');
     if(user){
       this.user = user;
@@ -115,6 +125,64 @@ export class HeaderComponent {
         translate.setDefaultLang('en');
 
   }
+
+
+  ngOnInit(): void {
+    this.getInitData();
+  }
+
+  getInitData(){
+
+    this.notificationService.getAllNotifications().subscribe(
+      ( {success, notifications} )=>{
+        if(success){
+          this.numberNotification = notifications.length;
+          this.arrNotifications= notifications;
+          this.arrNotifications = this.arrNotifications.filter( element => element.status !== 'read');
+          this.arrNotifications.sort((a, b) => {
+            const dateA = new Date(a.timestamp).getTime();
+            const dateB = new Date(b.timestamp).getTime();
+            return dateB - dateA; // Ordenar en orden descendente
+          });
+
+          this.arrNotifications = this.arrNotifications.slice(0, 3);
+
+        }
+      })
+  }
+
+  markNotificationRead(id:any){
+    this.notificationService.markNotificationRead(id).subscribe(
+      ( {success} )=>{
+        if(success){
+          this.getInitData();
+        }
+      });
+  }
+
+  
+  openDialogUser( user:any) {
+    const dialogRef = this.dialog.open(UserModalComponent,{
+      maxWidth: (this.phone) ? "99vw": '600px',
+      maxHeight: (this.phone) ? "98vh": '800px',
+      data: {...user, fromNotification:true}
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  deleteNotificationById(notification:any){
+
+    this.notificationService.deleteNotificationById(notification.idnotification).subscribe(
+      ( {success} )=>{
+        if(success){
+          this.getInitData();
+        }
+      })
+  }
+
 
   openDialog() {
     const dialogRef = this.dialog.open(AppSearchDialogComponent);

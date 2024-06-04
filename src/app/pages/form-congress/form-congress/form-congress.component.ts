@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { CommonModule, Location} from '@angular/common';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject, delay } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
@@ -18,6 +18,8 @@ import { ImagenPathPipe } from 'src/app/pipe/imagen-path.pipe';
 import { MoreInfoComponent } from "../../more-info/more-info/more-info.component";
 import Swal from 'sweetalert2';
 import { PrivacyModalComponent } from '../../modals/privacy-modal/privacy-modal/privacy-modal.component';
+import moment from 'moment';
+import { Router } from '@angular/router';
 
 
 
@@ -30,21 +32,13 @@ import { PrivacyModalComponent } from '../../modals/privacy-modal/privacy-modal/
     imports: [CommonModule, MaterialModule, ReactiveFormsModule, TablerIconsModule, ImagenPathPipe, MoreInfoComponent]
 })
 
-export class FormCongressComponent {
+export class FormCongressComponent implements OnInit, OnDestroy{
 
   @ViewChild('fileUploader') fileUploader: ElementRef;
   @ViewChild('top') top: ElementRef;
   @ViewChild('topMain') topMain: ElementRef;
   @ViewChild(MatTabGroup) tabGroup: MatTabGroup;
 
-  changeTab(index: number): void {
-    this.isLoading = true;
-    setTimeout(()=>{
-      this.isLoading = false;
-    } ,1500)
-    this.tabGroup.selectedIndex = index;
-    this.goToTop();
-  }
 
   pictureDataUrl: string;
   myForm! : FormGroup;
@@ -73,31 +67,33 @@ export class FormCongressComponent {
               private errorService : ErrorService,
               private paymentService : PaymentService,
               private toastr: ToastrService,
-              private dialog : MatDialog
+              private dialog : MatDialog,
+              private location : Location,
+              private router : Router
              )  
     { 
       (screen.width < 800) ? this.phone = true : this.phone = false;
     }
-    
+
     
     
     ngOnInit(): void {
 
-   
-
+  
 
       this.errorService.closeIsLoading$.pipe(delay(700)).subscribe( (emitted) => { if(emitted){this.isLoading = false}});
       this.errorService.repitedPayment$.subscribe( (emitted) => { if(emitted){this.blockPayment = true}});
 
       this.checkIfUserExist();
 
+
       this.myForm = this.fb.group({
         fullName: new FormControl('', [Validators.required]),
         address: new FormControl('', [Validators.required]),
         phone : new FormControl('', [Validators.required]),
         profession : new FormControl('', [Validators.required]),
+        anniversary : new FormControl('', [Validators.required]),
         email: [''],
-        conditions:  new FormControl(false, [Validators.requiredTrue]),
         age:  new FormControl(false, [Validators.requiredTrue]),
         consent:  new FormControl(false, [Validators.requiredTrue]),
         privacy:  new FormControl(false, [Validators.requiredTrue]),
@@ -108,28 +104,33 @@ export class FormCongressComponent {
         fullNamePayment: new FormControl( '', [Validators.required]),
         emailPayment: new FormControl('', [Validators.required]),
         price: new FormControl('300', [Validators.required]),
-        // cpf:  new FormControl('', [Validators.required]),
-        cpf:  new FormControl('05693810615', [Validators.required]),
+        cpf:  new FormControl('', [Validators.required]),
+        // cpf:  new FormControl('05693810615', [Validators.required]),
         payment:  new FormControl('', [Validators.required]),
 
       });
 
+      this.myForm.get('anniversary')?.valueChanges.subscribe( (value:string) => {
+        if(value && value !== ''){
+          this.formatInput(value);
+        }
+      });
      
   }
 
 
 
+
    checkIfUserExist(){
      
-     let userSS = getDataSS('user');
      
+     let userSS = getDataSS('user');
      if(userSS){
        this.paymentService.getUserByEmail(userSS.email).subscribe(
          ( {success, user, conference, payment} )=>{
-
-            this.conference = conference;
-            this.payment = payment;
            if(success){
+             this.conference = conference;
+             this.payment = payment;
              this.user = user;
              this.setUserData(user);
 
@@ -141,8 +142,55 @@ export class FormCongressComponent {
 
      }
 
+
     //  const fullName = this.myForm.get('fullName')?.value;
     
+   }
+
+   
+   changeTab(index: number): void {
+     this.isLoading = true;
+     setTimeout(()=>{
+       this.tabGroup.selectedIndex = index;
+      }, 1100)
+      setTimeout(()=>{
+        this.isLoading = false;
+      }, 1000)
+      this.goToTop();
+    }
+
+    showTab0 : boolean = true;
+    showTab1 : boolean = true;
+    showTab2 : boolean = true;
+    showTab3 : boolean = true;
+
+
+   checkTabSelected(user:any){
+    console.log(user.noProfileYet);
+
+    if(this.phone){
+      
+    const tabSelected = getDataSS('tabSelected');
+    // si es el primer login que solo muestre la seccion del perfil
+     if(tabSelected){
+       if(tabSelected === 'inscription' && !user.noProfileYet){
+         this.showTab0 = false;
+         this.showTab2 = false;
+ 
+       }else if(tabSelected === 'hotel' && !user.noProfileYet){
+         this.showTab0 = false;
+         this.showTab1 = false;
+       }else if(tabSelected === 'profile' && !user.noProfileYet){
+         this.showTab1 = false;
+         this.showTab2 = false;
+       }
+     }else{
+       this.showTab1 = false;
+       this.showTab2 = false;
+     }
+
+    }
+
    }
 
 
@@ -154,50 +202,71 @@ export class FormCongressComponent {
     return this.myFormPayment.controls;
   }
 
+
+  profileFirst : boolean = false;
+
   setUserData( user:any ){
 
     this.isEditing = true;
 
-    if( this.conference ){
+    this.checkTabSelected( user);
+
+
+    if( this.conference &&  this.conference.length > 0 ){
 
       this.conference.forEach((element: any) => {
-        if(element.name === 'tomista'){
+        if(element.name === 'Tomista'){
           this.blockPayment = true;
+          const tabSelected = getDataSS('tabSelected');
+          if( (tabSelected && tabSelected === 'inscription')  || !this.phone ){
+            this.warningToast('Você já se cadastrou.')
+          }
         }
       }); 
 
     }  
+    console.log(user);
 
     //en el primer login todavia no se creo el perfil
-    if(!user.noProfileYet){
+    if(user.noProfileYet){
+
+      this.myForm.patchValue({
+        email : user.email,
+      })
+  
+      this.myFormPayment.patchValue({
+        emailPayment : user.email,
+      })
+
+      this.warningToast('Precisamos que você complete seu perfil.');
+      this.showTab1 = false;
+      this.showTab2 = false;
+      this.profileFirst = true;
+     
+
+    }else{
+
       this.myForm.patchValue({
         fullName : user.fullName,
         email : user.email,
         address: user.address,
         phone : user.phone,
         profession : user.profession,
-        conditions:  true,
+        anniversary : user.anniversary,
         age:  true,
         consent:  true,
         privacy:  true,
       })
   
       this.myFormPayment.patchValue({
+        cpf: (this.payment) ? this.payment.cpf : null,
         fullNamePayment : user.fullName,
         emailPayment : user.email,
         payment : (this.payment) ? this.payment.paymentOption : null
       })
   
       this.pathImg = user.filePath;
-
-    }else{
-      this.myForm.patchValue({
-        email : user.email,
-      })
-  
-      this.myFormPayment.patchValue({
-        emailPayment : user.email,
-      })
+   
 
     }
 
@@ -213,11 +282,6 @@ export class FormCongressComponent {
     }
 
 
-    // if (!this.selectedImg && !this.pathImg  ) {
-    //   this.warningToast('Sua foto de perfil é obrigatória');
-    //   return;
-    // } 
-
     let body = {
       ...this.myForm.value,
       email: this.user.email
@@ -227,14 +291,14 @@ export class FormCongressComponent {
       body = { ...body, filePath: this.pathImg }
     }
     
-     const { confirm, age, consent, conditions, privacy, ...bodyWithout } = body;
+     const { confirm, age, consent, privacy, ...bodyWithout } = body;
 
     this.isLoading = true;
     this.authService.createProfile(bodyWithout, this.selectedImg).subscribe(
       ( {success} )=>{
         if(success){
-          this.changeTab(1);
-
+          this.profileFirst = false;
+  
           this.myFormPayment.patchValue({
             fullNamePayment : this.myForm.get('fullName')?.value,
             emailPayment : this.myForm.get('email')?.value,
@@ -242,6 +306,12 @@ export class FormCongressComponent {
           setTimeout(()=>{  
             this.successToast('Formulario salvo com sucesso');
             this.isLoading = false;
+            if(this.phone){
+              this.router.navigateByUrl('/home-app');
+              return
+            }
+            this.changeTab(1);
+  
           },1000)
         }
       });
@@ -277,6 +347,10 @@ export class FormCongressComponent {
             this.showSuccessAlert('Sua fatura foi enviada com sucesso','Verifique seu e-mail');
             this.isLoading = false;
             this.blockPayment = true;
+            if(this.phone){
+              this.router.navigateByUrl('/home-app');
+              return
+            }
           },1000)
         }
       });
@@ -304,11 +378,91 @@ export class FormCongressComponent {
       } else {
         cpf.setErrors(null); // Limpiar errores si el CPF es válido
         this.showChecked = true;
-        // this.cpf = cpf.value;
-   
+        const cleanedCPF = cpf.value.replace(/\D/g, '');
+        this.myFormPayment.get('cpf')?.setValue(cleanedCPF);
       }
+     
     }
   }
+
+  showErrorAnniversary : boolean = false;
+
+
+  formatInput(value: string) {
+
+    const digits = value.replace(/\D/g, ''); // Eliminar caracteres que no sean dígitos
+    let formattedValue = '';
+    let dayError = false;
+
+    if (digits.length <= 2) {
+      formattedValue = digits;
+      this.showErrorAnniversary = false;
+      const toNumber = parseInt(digits)
+      if(toNumber > 31){
+        this.showErrorAnniversary = true;
+        dayError = true;
+      }else{
+        dayError = false;
+      }
+    } else if (digits.length <= 4 ) {
+        let monthError = false;
+        if(dayError){
+          this.myForm.patchValue({ anniversary: digits.slice(0, 2)});
+          return
+        }else{
+         this.showErrorAnniversary = false;
+        const month = parseInt(digits.slice(2, 4));
+        if(month > 12){
+          this.showErrorAnniversary = true;
+          const inputValue =  this.myForm.get('anniversary')?.value;
+          this.myForm.patchValue({ anniversary: inputValue.slice(0, 3)} , { emitEvent: false });
+          monthError = true;
+          return
+        }
+          formattedValue = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+          monthError = false;
+      }
+      
+    } else {
+
+      let year = null;
+       if(digits.length === 8){
+        year = parseInt(digits.slice(4,8));
+        if(year < 1910 || year > 2030){
+          this.showErrorAnniversary = true;
+          return
+        }else{
+          this.showErrorAnniversary = false;
+        }
+       } 
+    
+      formattedValue = `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4, 8)}`;
+
+    }
+    if (value !== formattedValue ) {
+      this.myForm.patchValue({ anniversary: formattedValue }, { emitEvent: false });
+    }
+      
+  }
+
+  logout(){
+    this.errorService.logout();
+   }
+
+  onAnniversarySelected() {
+
+    const anniversary = this.myForm.get('anniversary')?.value;
+  
+    const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+    
+      // Verificar si el valor cumple con la expresión regular
+      if (!regex.test(anniversary) || this.showErrorAnniversary) {
+        this.myForm.get('anniversary')?.setErrors({ invalidDateFormat: true });
+      } else {
+        this.myForm.get('anniversary')?.setErrors(null); // Eliminar errores si el formato es válido
+      }
+  }
+  
 
   get validateNumberCount() : string {
     const errors = this.myFormPayment.get('cpf')?.errors;
@@ -337,6 +491,22 @@ export class FormCongressComponent {
       const file = this.base64ToFile(result, 'captured-image.png');
       this.onFileSelected({ target: { files: [file] } });
     });
+  }
+
+  checkAge(){
+
+    const birthday = this.myForm.get('anniversary')?.value;
+    const today = moment(); 
+    const birthDate = moment(birthday, 'DD/MM/YYYY'); // Convertir la fecha de nacimiento a objeto moment
+  
+    const age = today.diff(birthDate, 'years'); // Calcular la diferencia de años entre hoy y la fecha de nacimiento
+  console.log(age);
+    if (age < 18) {
+    setTimeout(()=>{ this.myForm.get('age')?.setValue(null) }, 100)
+    } else{
+    setTimeout(()=>{ this.myForm.get('age')?.setValue(true) }, 100)
+
+    }
   }
 
   openDialogPrivacy() {
@@ -446,13 +616,25 @@ export class FormCongressComponent {
   }
 
   warningToast( msg:string){
-    this.toastr.warning(msg, 'Sucesso!!', {
+    this.toastr.warning(msg, 'Atenção', {
       positionClass: 'toast-bottom-right', 
       timeOut: 3500, 
       messageClass: 'message-toast',
       titleClass: 'title-toast'
     });
   }
+
+  goBack(){
+    setTimeout(() => {
+      this.location.back();
+    }, 100);
+  }
+
+  ngOnDestroy(): void {
+    sessionStorage.removeItem('inscription');
+    sessionStorage.removeItem('hotel');
+  }
+    
 
 
 }

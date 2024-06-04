@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material.module';
+import { AuthService } from 'src/app/services/auth.service';
 import { PaymentService } from 'src/app/services/payment.service';
 
 @Component({
@@ -20,7 +21,8 @@ export class DeleteModalComponent implements OnInit {
   constructor(
                 @Inject(MAT_DIALOG_DATA) public data: any,
                 private matDialogRef : MatDialogRef<DeleteModalComponent>,
-                private paymentService : PaymentService
+                private paymentService : PaymentService,
+                private authService : AuthService
              )
   {}
 
@@ -34,6 +36,8 @@ export class DeleteModalComponent implements OnInit {
 
     if(this.component === "participant" ){
       this.paymentService.authPaymentAction$.emit(false);
+    }else if(this.component === "user"){
+      this.authService.authDeleteUser$.emit(false);
     }
 
     this.matDialogRef.close();
@@ -46,6 +50,8 @@ export class DeleteModalComponent implements OnInit {
 
     if(this.component === "participant" ){
       this.paymentService.authPaymentAction$.emit(true);
+    }else if(this.component === "user"){
+      this.authService.authDeleteUser$.emit(true);
     }
 
     this.matDialogRef.close();

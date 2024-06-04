@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { delay } from 'rxjs';
+import { Subscription, delay, take } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { ErrorService } from 'src/app/services/error.service';
 import { ImagenPathPipe } from "../../../pipe/imagen-path.pipe";
@@ -15,6 +15,7 @@ import { ToastrService } from 'ngx-toastr';
 import { UserModalComponent } from '../../user-modal/user-modal/user-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { DeleteModalComponent } from '../../modals/delete-modal/delete-modal/delete-modal.component';
 
 interface User {
   img : string, 
@@ -34,13 +35,14 @@ interface User {
 export class UserComponent {
 
 
-  displayedColumns: string[] = ['img','fullName','address','role'];
+  displayedColumns: string[] = ['img','fullName','address','action', 'role'];
   dataSource: MatTableDataSource<User>;
   isLoading : boolean = false;
   phone : boolean = false;
   users : any[]=[];
   toppings = new FormControl('');
   toppingList: string[] = ['user', 'admin'];
+  private unsubscribe$: Subscription;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -62,7 +64,7 @@ export class UserComponent {
 
       this.dataSource = new MatTableDataSource();
 
-      (screen.width) ? this.phone = true : this.phone = false;
+      (screen.width < 800) ? this.phone = true : this.phone = false;
       
       this.errorService.closeIsLoading$.pipe(delay(700)).subscribe( (emitted: any) => { if(emitted){this.isLoading = false}});
 
@@ -101,6 +103,49 @@ export class UserComponent {
   
   }
 
+  activePauseUser( element:any, action:string ){
+
+    this.authService.activePauseUser( element.iduser, action).subscribe( 
+      ( {success})=>{
+            if(success){
+  
+              if(action === 'paused'){
+                this.successToast("Usuário pausada com successo")
+              }else if(action === "active"){
+                this.successToast("Usuário ativada com successo")
+              }
+              this.getInitData();
+            }
+      } )
+  }
+
+  openDeleteModal( element :any){
+  
+    const dialogRef =this.dialog.open(DeleteModalComponent,{
+      maxWidth: (this.phone) ? "98vw": '',
+      panelClass: "custom-modal-picture",    
+      data: { component: "user" }
+      });
+
+      this.unsubscribe$ = this.authService.authDeleteUser$.pipe(take(1)).subscribe(
+        (auth)=>{
+          if(auth){
+
+              this.authService.deleteUserById(element.iduser).subscribe(
+                ( {success} )=>{
+                  if(success){
+                      this.successToast('Usuário excluído corretamente');
+                      this.getInitData();
+                  }
+                })
+          
+          }else{
+            this.unsubscribe$.unsubscribe();
+          }
+        })
+
+  }
+
   ngAfterViewInit() {
     // Configurar paginación y ordenamiento
     this.dataSource.paginator = this.paginator;
@@ -119,7 +164,6 @@ export class UserComponent {
     });
   }
 
-
   applyFilter(event: Event) {
     console.log(event);
     const filterValue = (event.target as HTMLInputElement).value;
@@ -129,7 +173,6 @@ export class UserComponent {
       this.dataSource.paginator.firstPage();
     }
   }
-
       
   successToast( msg:string){
     this.toastr.success(msg, 'Sucesso!!', {

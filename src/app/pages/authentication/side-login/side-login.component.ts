@@ -75,7 +75,11 @@ export class AppSideLoginComponent implements OnInit {
           setTimeout(()=>{ 
             this.isLoading = false;
             if(user.role === "user"){
-              this.router.navigate(['/formulario']);
+              if(this.phone){
+                this.router.navigate(['/home-app']);
+              }else{
+                this.router.navigate(['/formulario']);
+              }
             }else if(user.role === "admin"){
               this.router.navigateByUrl('/painel');
             }

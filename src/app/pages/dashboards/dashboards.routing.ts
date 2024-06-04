@@ -6,6 +6,7 @@ import { FormCongressComponent } from '../form-congress/form-congress/form-congr
 import { ParticipantsComponent } from '../participants/participants/participants.component';
 import { ConferenceComponent } from '../conference/conference/conference.component';
 import { UserComponent } from '../user/user/user.component';
+import { NotificationComponent } from '../notification/notification/notification.component';
 
 export const DashboardsRoutes: Routes = [
   {
@@ -19,6 +20,9 @@ export const DashboardsRoutes: Routes = [
       },
       {
         path: 'usuarios', component: UserComponent,  data: { title: 'Usuários' },
+      },
+      {
+        path: 'notificacoes', component: NotificationComponent,  data: { title: 'Notificações' },
       },
     ],
   },

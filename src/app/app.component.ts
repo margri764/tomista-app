@@ -32,6 +32,7 @@ export class AppComponent implements OnInit {
   
   ngOnInit(): void {
 
+
     this.initCookies()
   const token = this.cookieService.get('token');
   const session = getDataSS('session')

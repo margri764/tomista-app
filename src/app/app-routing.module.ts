@@ -5,6 +5,7 @@ import { FullComponent } from './layouts/full/full.component';
 import { FormCongressComponent } from './pages/form-congress/form-congress/form-congress.component';
 import { AppSideLoginComponent } from './pages/authentication/side-login/side-login.component';
 import { AppErrorComponent } from './pages/authentication/error/error.component';
+import { HomePhoneComponent } from './pages/home-phone/home-phone/home-phone.component';
 
 const routes: Routes = [
   {
@@ -37,7 +38,9 @@ const routes: Routes = [
 
   {
     path: 'formulario', component: FormCongressComponent,  data: { title: 'Formulario' },
-
+  },
+  {
+    path: 'home-app', component: HomePhoneComponent,  data: { title: 'Formulario' },
   },
  
   { path: "login", component: AppSideLoginComponent },

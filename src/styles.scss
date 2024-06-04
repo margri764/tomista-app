@@ -7,9 +7,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
     font-family:'poppins-regular';
     src: url(assets/font/poppins/Poppins-Regular.ttf);
     }
+
   @font-face {
     font-family:'poppins-medium';
     src: url(assets/font/poppins/Poppins-Medium.ttf);
+    }
+  
+  @font-face {
+    font-family:'poppins-light';
+    src: url(assets/font/poppins/Poppins-Light.ttf);
     }
   
   
@@ -20,6 +26,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
   
   .font-medium{
       font-family: 'poppins-medium';
+  }
+  
+  .font-light{
+      font-family: 'poppins-light';
   }
   
   
@@ -37,9 +47,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
       font-size: 1.1em;
     }
   
-  
     .fs-12{
       font-size: 1.2em;
+    }
+    .fs-13{
+      font-size: 1.3em;
+    }
+    .fs-14{
+      font-size: 1.4em;
+    }
+    .fs-15{
+      font-size: 1.5em;
     }
   
     .align-items-center{

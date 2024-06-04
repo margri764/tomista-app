@@ -13,7 +13,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 export class AuthService {
 
-  // closeLoginWebmaster$ : EventEmitter<boolean> = new EventEmitter<boolean>; 
+  authDeleteUser$ : EventEmitter<boolean> = new EventEmitter<boolean>; 
 
   // user! : User;
   user! : any;
@@ -74,7 +74,6 @@ export class AuthService {
     )
   }
 
-
   signUp(body:any){
     
     return this.http.post<any>(`${this.baseUrl}api/auth/signUp`, body) 
@@ -102,6 +101,29 @@ export class AuthService {
       tap( ( res) =>{console.log("from createProfile Service: ", res);  }  
       ),            
       map( (res: any) => res )
+    )
+  }
+
+  deleteUserById( id:any  ){
+
+    
+    return this.http.patch<any>(`${this.baseUrl}api/user/deleteUserById/${id}`, null) 
+    
+    .pipe(
+      tap( ( res) =>{console.log("from deleteUserById Service: ", res);  }  
+      ),            
+      map( (res: any) => res )
+    )
+  }
+
+  activePauseUser( id:any, action:any ){
+    return this.http.patch<any>(`${this.baseUrl}api/user/activePauseUser/${id}?action=${action}`, null) 
+    .pipe(
+      tap( ( res) =>{
+                    console.log("from activePauseUser service: ",res);
+                }  
+      ),            
+      map( res => res )
     )
   }
 
