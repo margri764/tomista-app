@@ -110,6 +110,12 @@
   </ng-container>
     
     <mat-divider></mat-divider>
+    <div class="p-y-12 p-x-32" *ngIf="arrNotifications.length > 1" >
+      <button mat-stroked-button color="primary" class="w-100"  (click)="bulkMarkNotificationRead()">
+        Marcar todas como lidas
+      </button>
+      
+    </div>
 
     <div class="p-y-12 p-x-32" >
       <button mat-stroked-button color="primary" class="w-100" routerLink="/painel/notificacoes">

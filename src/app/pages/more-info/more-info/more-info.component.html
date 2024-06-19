@@ -1,15 +1,99 @@
 
-<div class="d-flex justify-content-between align-items-center w-100 customCard" style="border-radius: 7px; background-color: rgba(0, 195, 255, 0.151);  ">
+<div class="d-flex justify-content-between align-items-center w-100 customCard header"  *ngIf="!phone">
 
-  <h2 class="font-light" style="line-height: 25px; "> Sugestões de alojamento </h2>
+  <span class="font-light fs-15" style="line-height: 25px; "> Programa do Congresso  </span>
 
-<span class="material-icons" [ngStyle]="phone ? {'font-size':'80px'} : {'font-size':'100px'} " style="color: rgb(164, 164, 164);">luggage</span>
+<span class="material-icons" [ngStyle]="phone ? {'font-size':'70px'} : {'font-size':'45px'} " style="color: white;">fact_check</span>
 </div>
+
+<div class="d-flex  align-items-center pd-10" *ngIf="!phone">
+
+  <div style="margin-top: 20px; margin-left: 20px;">
+    <button mat-icon-button style="background-color: rgb(0, 136, 255); color: white;"  class="iconShadow" (click)="openDialogProgram()">
+    <mat-icon>visibility</mat-icon>
+    </button>
+  </div>
+
+  <div style="margin-top: 20px; margin-left: 20px;">
+    <button mat-icon-button style="background-color: green; color: white;" class="iconShadow" (click)="downloadPdf()">
+    <mat-icon>download</mat-icon>
+    </button>
+  </div>
+
+  <div style="margin-top: 20px; margin-left: 20px;">
+    <button mat-icon-button style="background-color: rgb(155, 155, 155); color: white; " class="iconShadow" (click)="sharePdf()">
+    <mat-icon>share</mat-icon>
+    </button>
+  </div>
+
+  
+</div>
+
+<div class="justify-content-start align-items-end w-100 customCard font" style="border-radius: 4px;"  *ngIf="phone">
+
+  <span class="d-block w-100 fs-12 mt-10 "> <b> Programa do Congresso</b> </span>
+  <mat-divider style="margin-top: 10px;"></mat-divider>
+
+  <div class=" pd-10 w-100">
+
+    <div class="d-flex justify-content-between align-items-center w-100 " style="margin-top: 20px; "  (click)="openDialogProgram()">
+      <span>  Ver programa </span>
+      <button mat-icon-button style="background-color: rgb(0, 136, 255); color: white; transform: scale(0.80);"  class="iconShadow">
+      <mat-icon>visibility</mat-icon>
+      </button>
+    </div>
+  
+    <mat-divider style="margin-top: 5px;"></mat-divider>
+
+   <div class="d-flex justify-content-between align-items-center w-100 " (click)="downloadPdf()" >
+      <span>  Baixar </span>
+      <button mat-icon-button style="background-color: green; color: white; transform: scale(0.80);"  class="iconShadow" >
+      <mat-icon>download</mat-icon>
+      </button>
+   </div>
+
+   <mat-divider style="margin-top: 5px;"></mat-divider>
+
+   <div class="d-flex justify-content-between align-items-center w-100 " (click)="sharePdf()" >
+      <span> Compartilhar </span>
+      <button mat-icon-button style="background-color: rgb(155, 155, 155); color: white; transform: scale(0.80);"  class="iconShadow">
+      <mat-icon>share</mat-icon>
+      </button>
+   </div>
+
+    <!-- <div style="margin-top: 20px; margin-left: 20px;">
+      <button mat-icon-button style="background-color: rgb(155, 155, 155); color: white; " class="iconShadow" (click)="sharePdf()">
+      <mat-icon>share</mat-icon>
+      </button>
+    </div>  -->
+  
+    
+  </div>
+</div>
+
+
+<div class="d-flex justify-content-between align-items-center w-100 customCard header mt-50" *ngIf="!phone">
+
+  <span class="font-light fs-15" style="line-height: 25px; "> Sugestões de alojamento </span>
+
+<span class="material-icons" [ngStyle]="phone ? {'font-size':'80px'} : {'font-size':'50px'} " style="color: white;">luggage</span>
+</div>
+
+<div class="justify-content-start align-items-end w-100  font mt-50">
+  <mat-card-title style="font-family: poppins-regular !important; ">Sugestões de alojamento</mat-card-title>
+  
+  <mat-card-subtitle style="margin-top: 10px;">  <mat-divider></mat-divider> </mat-card-subtitle>
+</div>
+
+
+
 <div class="row" >
 
     <div class="col-sm-12 col-xs-12 col-md-6 mt-40"  >
       <mat-card class="customCard font fs-10" >
         <mat-card-header>
+       
+
           <mat-card-title style="font-family: poppins-regular !important;">Centro de Espiritualidade Flos Carmeli - SAEP</mat-card-title>
           <mat-card-subtitle>(a 35 minutos do local do Congresso)</mat-card-subtitle>
         </mat-card-header>

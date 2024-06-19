@@ -6,6 +6,7 @@ import { FormCongressComponent } from './pages/form-congress/form-congress/form-
 import { AppSideLoginComponent } from './pages/authentication/side-login/side-login.component';
 import { AppErrorComponent } from './pages/authentication/error/error.component';
 import { HomePhoneComponent } from './pages/home-phone/home-phone/home-phone.component';
+import { SuccessPaymentComponent } from './pages/success-payment/success-payment/success-payment.component';
 
 const routes: Routes = [
   {
@@ -21,7 +22,7 @@ const routes: Routes = [
      
     ],
   },
-  
+
   {
     path: 'autenticacao',
     component: BlankComponent,
@@ -40,7 +41,10 @@ const routes: Routes = [
     path: 'formulario', component: FormCongressComponent,  data: { title: 'Formulario' },
   },
   {
-    path: 'home-app', component: HomePhoneComponent,  data: { title: 'Formulario' },
+    path: 'pagamento-bem-sucedido', component: SuccessPaymentComponent,  data: { title: 'Pagamento' },
+  },
+  {
+    path: 'home-app', component: HomePhoneComponent,  data: { title: 'Home' },
   },
  
   { path: "login", component: AppSideLoginComponent },

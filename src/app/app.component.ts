@@ -16,7 +16,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 
 export class AppComponent implements OnInit {
 
-  title = 'Modernize Angular Admin Tempplate';
+  title = 'Congresso';
   
   constructor(
               private cookieService : CookieService,

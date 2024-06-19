@@ -9,9 +9,11 @@ export class PaymentStatusPipe implements PipeTransform {
   transform( status:string): any {
 
     if(status === 'pending'){
-      return 'pendente'
+      return 'Pendente'
     }else if(status === 'paid' ){
-      return 'pago'
+      return 'Pago'
+    }else if(status === 'refund' || status === 'refunded' ){
+      return 'Reembolsado'
     }
     return null;
   }

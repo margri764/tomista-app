@@ -4,10 +4,20 @@
 
   
     <div class="customCard pd-10 table-container">
-      <mat-form-field  >
-        <mat-label>Buscar</mat-label>
-        <input matInput (keyup)="applyFilter($event)">
-      </mat-form-field>
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-10">
+        <mat-form-field  >
+          <mat-label>Buscar</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar">
+        </mat-form-field>
+
+      <div class="d-flex justify-content-between align-items-center ">
+       
+        <button  mat-flat-button class="customCard"  (click)="deleteAllNotifications()" style="background-color: red; color: white; margin-right: 10px;">
+          <mat-icon>delete</mat-icon>
+          Excluir tudo </button>
+      </div>
+  
+    </div>
     
       <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" >
     

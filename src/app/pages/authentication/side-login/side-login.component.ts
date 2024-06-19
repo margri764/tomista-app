@@ -23,7 +23,15 @@ import { CommonModule } from '@angular/common';
       right: 5px;
       transform: translateY(-65%);
     }
-  `
+    .mat-mdc-form-field {
+    height: 50px;
+    .mat-mdc-form-field-flex {
+      height: 50px;
+      align-items: center;
+    }
+  }
+
+  `  
   
   ]
 })
@@ -67,6 +75,10 @@ export class AppSideLoginComponent implements OnInit {
 
   submit() {
 
+    if (this.form.invalid) {
+      this.form.markAllAsTouched(); 
+      return;
+    }
 
     this.isLoading = true;
     this.authService.login(this.form.value).subscribe( 
@@ -81,7 +93,7 @@ export class AppSideLoginComponent implements OnInit {
                 this.router.navigate(['/formulario']);
               }
             }else if(user.role === "admin"){
-              this.router.navigateByUrl('/painel');
+              this.router.navigateByUrl('/painel/usuarios');
             }
           }, 1000)
 

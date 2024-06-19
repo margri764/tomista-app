@@ -29,6 +29,10 @@
     margin-left: 7px;
   }
 
+  button{
+    font-family: 'poppins-regular';
+  }
+
   input{
             
     font-family: 'poppins-regular' !important;
@@ -50,4 +54,10 @@
     -webkit-box-shadow: 5px 10px 17px 0px rgba(153,153,153,0.60);
     -moz-box-shadow: 5px 10px 17px 0px rgba(153,153,153,0.60); 
   }
+
+  .custom-height .mat-form-field-infix {
+    height: 20px !important; 
+  }
+  
+  
 

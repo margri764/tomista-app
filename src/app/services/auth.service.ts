@@ -107,7 +107,7 @@ export class AuthService {
   deleteUserById( id:any  ){
 
     
-    return this.http.patch<any>(`${this.baseUrl}api/user/deleteUserById/${id}`, null) 
+    return this.http.delete<any>(`${this.baseUrl}api/user/deleteUserById/${id}`) 
     
     .pipe(
       tap( ( res) =>{console.log("from deleteUserById Service: ", res);  }  
@@ -183,6 +183,19 @@ export class AuthService {
     .pipe(
       tap( ( res) =>{
                     console.log("from resendPasword service: ",res);
+                }  
+      ),            
+      map( res => res )
+    )
+  }
+
+  getProgramByConferenceId(id: any){
+  
+    return this.http.get<any>(`${this.baseUrl}api/user/getProgramByConferenceId/${id}`) 
+    
+    .pipe(
+      tap( ( res) =>{
+                    console.log("from getProgramByConferenceId service: ",res);
                 }  
       ),            
       map( res => res )

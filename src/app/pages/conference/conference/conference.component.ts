@@ -34,6 +34,9 @@ export class ConferenceComponent {
   dataSource: MatTableDataSource<any>;
   isLoading : boolean = false;
   payments : any[]=[];
+  paidPercent : any = 0;
+  paymentPaid : number = 0;
+  registerPercent : number = 0;
 
 
 
@@ -61,6 +64,7 @@ export class ConferenceComponent {
       ( {success, payments} )=>{
         if(success){
           this.payments = payments;
+          this.makeStatistics(payments);
           this.dataSource = new MatTableDataSource(payments);
           setTimeout(()=>{this.isLoading = false },1000)
 
@@ -69,20 +73,29 @@ export class ConferenceComponent {
 
   }
 
-  ngAfterViewInit() {
-    // Configurar paginación y ordenamiento
-    // this.dataSource.paginator = this.paginator;
-    // this.dataSource.sort = this.sort;
+
+
+  calculatePercentage(value: number, total: number): string {
+    let percentage = (value / total) * 100;
+    console.log(percentage.toFixed(2));
+    return percentage.toFixed(2);
+  }
+  
+
+  makeStatistics(payments : any){
+    if(payments.length === 0) return;
+    let paymentPaid = [];
+    paymentPaid = payments.filter( (element:any) => 
+    element.paymentStatus === "paid");
+
+    this.paidPercent = ((paymentPaid.length / payments.length) * 100).toFixed(2);
+    this.registerPercent = (payments.length / 100) * 100;
+    this.paymentPaid = paymentPaid.length ;
+
+    console.log(paymentPaid.length);
+
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
 
 
 

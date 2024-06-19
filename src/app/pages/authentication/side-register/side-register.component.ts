@@ -53,6 +53,11 @@ export class AppSideRegisterComponent implements OnInit {
 
   submit() {
 
+    if (this.form.invalid) {
+      this.form.markAllAsTouched(); 
+      return;
+    }
+
     this.isLoading = true;
 
     this.authService.signUp(this.form.value).subscribe( 

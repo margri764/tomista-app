@@ -133,7 +133,7 @@ export class HeaderComponent implements OnInit {
 
   getInitData(){
 
-    this.notificationService.getAllNotifications().subscribe(
+    this.notificationService.getAllNotificationsUnread().subscribe(
       ( {success, notifications} )=>{
         if(success){
           this.numberNotification = notifications.length;
@@ -160,7 +160,15 @@ export class HeaderComponent implements OnInit {
       });
   }
 
-  
+  bulkMarkNotificationRead(){
+    this.notificationService.bulkMarkNotificationRead().subscribe(
+      ( {success} )=>{
+        if(success){
+          this.getInitData();
+        }
+      });
+  }
+
   openDialogUser( user:any) {
     const dialogRef = this.dialog.open(UserModalComponent,{
       maxWidth: (this.phone) ? "99vw": '600px',
@@ -182,7 +190,6 @@ export class HeaderComponent implements OnInit {
         }
       })
   }
-
 
   openDialog() {
     const dialogRef = this.dialog.open(AppSearchDialogComponent);

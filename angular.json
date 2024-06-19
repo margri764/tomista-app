@@ -28,6 +28,7 @@
             "styles": [
               "src/styles.scss",
               "src/assets/scss/style.scss",
+         
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/angular-calendar/css/angular-calendar.css"
             ],

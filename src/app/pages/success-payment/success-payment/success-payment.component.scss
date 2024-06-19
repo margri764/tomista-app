@@ -1,0 +1,16 @@
+
+.fondo {
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    -ms-flex-align: center;
+    align-items: center;
+    background-color: #e9ecef;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    height: 100vh;
+    -ms-flex-pack: center;
+    justify-content: center;
+  }

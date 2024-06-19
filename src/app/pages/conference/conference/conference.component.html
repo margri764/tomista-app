@@ -11,36 +11,23 @@
         <div class="d-flex align-items-center m-b-8">
           <div class="m-r-auto">
             <h6 class="mat-subtitle-1 f-s-16 f-w-600 m-b-4">Registrados</h6>
-            <span class="mat-body-1">235/300</span>
+            <span class="mat-body-1">{{payments.length}}</span>
           </div>
-          <span
-            class="bg-light-primary text-primary rounded f-w-600 p-4 f-s-12 p-x-12"
-          >
-            87%
+          <span class="bg-light-primary text-primary rounded f-w-600 p-4 f-s-12 p-x-12">
+            {{registerPercent}}%
           </span>
         </div>
-        <mat-progress-bar
-          mode="determinate"
-          value="40"
-          class="rounded"
-        ></mat-progress-bar>
+        <mat-progress-bar mode="determinate" [value]="registerPercent" class="rounded" ></mat-progress-bar>
         <div class="d-flex align-items-center m-b-8 m-t-16">
           <div class="m-r-auto">
             <h6 class="mat-subtitle-1 f-s-16 f-w-600 m-b-4">Pagamento</h6>
-            <span class="mat-body-1">220</span>
+            <span class="mat-body-1"> {{paymentPaid }}   </span>
           </div>
-          <span
-            class="bg-light-accent text-accent rounded f-w-600 p-4 f-s-12 p-x-12"
-          >
-            90%
+          <span class="bg-light-accent text-accent rounded f-w-600 p-4 f-s-12 p-x-12">
+            {{paidPercent}}%
           </span>
         </div>
-        <mat-progress-bar
-          mode="determinate"
-          color="accent"
-          value="40"
-          class="rounded"
-        ></mat-progress-bar>
+        <mat-progress-bar mode="determinate" color="accent" [value]="paidPercent" class="rounded"></mat-progress-bar>
       </mat-card-content>
     </mat-card>
   </mat-card>

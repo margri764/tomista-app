@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -32,10 +32,10 @@ interface User {
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss',
 })
-export class UserComponent {
+export class UserComponent implements OnInit, AfterViewInit  {
 
 
-  displayedColumns: string[] = ['img','fullName','address','action', 'role'];
+  displayedColumns: string[] = ['img','fullName','email','address','action', 'role'];
   dataSource: MatTableDataSource<User>;
   isLoading : boolean = false;
   phone : boolean = false;
@@ -68,8 +68,12 @@ export class UserComponent {
       
       this.errorService.closeIsLoading$.pipe(delay(700)).subscribe( (emitted: any) => { if(emitted){this.isLoading = false}});
 
-    this.getInitData();
+    }
+    
+    ngOnInit(): void {
+      this.getInitData();
   }
+
   
   getInitData(){
     
@@ -121,7 +125,7 @@ export class UserComponent {
 
   openDeleteModal( element :any){
   
-    const dialogRef =this.dialog.open(DeleteModalComponent,{
+    this.dialog.open(DeleteModalComponent,{
       maxWidth: (this.phone) ? "98vw": '',
       panelClass: "custom-modal-picture",    
       data: { component: "user" }
@@ -147,10 +151,19 @@ export class UserComponent {
   }
 
   ngAfterViewInit() {
-    // Configurar paginación y ordenamiento
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  
+    const savedPageSize = localStorage.getItem('userPageSize');
+    if (savedPageSize) {
+      this.paginator.pageSize = +savedPageSize;
+    }
+  
+    this.paginator.page.subscribe((event) => {
+      localStorage.setItem('userPageSize', event.pageSize.toString());
+    });
   }
+  
 
   openDialogUser( user:any) {
     const dialogRef = this.dialog.open(UserModalComponent,{

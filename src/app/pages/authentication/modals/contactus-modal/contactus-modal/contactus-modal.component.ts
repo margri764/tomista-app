@@ -43,6 +43,11 @@ export class ContactusModalComponent {
 
   onSave(){
 
+    if (this.myForm.invalid) {
+      this.myForm.markAllAsTouched(); 
+      return;
+    }
+
     this.isLoading = true;
 
     this.authService.adminContactUs(this.myForm.value).subscribe(

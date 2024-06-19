@@ -38,6 +38,7 @@ createPayment( body:any ){
     map( (res: any) => res )
   )
 }
+
 getAllPayments(  ){
 
  
@@ -61,13 +62,13 @@ getAllPayments(  ){
     )
   }
 
-  refundInvoice( body:any ){
+  refoundIuguPayment( body:any ){
 
  
-    return this.http.post<any>(`${this.baseUrl}api/payment/refundPayment`, body) 
+    return this.http.post<any>(`${this.baseUrl}api/payment/refoundIuguPayment`, body) 
     
     .pipe(
-      tap( ( res) =>{console.log("from refoundInvoice Service: ", res);  }  
+      tap( ( res) =>{console.log("from refoundIuguPayment Service: ", res);  }  
       ),            
       map( (res: any) => res )
     )
@@ -84,8 +85,31 @@ getAllPayments(  ){
     )
   }
 
+  refoundPaypalPayment( id:any ){
+ 
+    return this.http.post<any>(`${this.baseUrl}api/payment/refoundPaypalPayment/${id}`, null) 
+    
+    .pipe(
+      tap( ( res) =>{console.log("from refoundPaypalPayment Service: ", res);  }  
+      ),            
+      map( (res: any) => res )
+    )
+  }
+
+  changeStatus(id:any, body:any ){
+    return this.http.patch<any>(`${this.baseUrl}api/payment/changeStatus/${id}`, body) 
+    
+    .pipe(
+      tap( ( res) =>{console.log("from changeStatus Service: ", res);  }  
+      ),            
+      map( (res: any) => res )
+    )
+  }
+
 
   validaCPF(cpf:any) {
+    if(!cpf || cpf.length === 0)return
+    
     cpf = cpf.replace(/\D/g, ''); // Remover cualquier carácter que no sea dígito
     if (cpf.length !== 11) return false; // Verificar que el CPF tenga 11 dígitos
 

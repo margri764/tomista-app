@@ -1,6 +1,6 @@
 import { CommonModule, Location} from '@angular/common';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject, delay } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { AuthService } from 'src/app/services/auth.service';
@@ -20,16 +20,18 @@ import Swal from 'sweetalert2';
 import { PrivacyModalComponent } from '../../modals/privacy-modal/privacy-modal/privacy-modal.component';
 import moment from 'moment';
 import { Router } from '@angular/router';
-
-
-
+import { OpenPdfComponent } from '../../modals/open-pdf/open-pdf/open-pdf.component';
+import { PaymentStatusPipe } from "../../../pipe/payment-status.pipe";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
     selector: 'app-form-congress',
     standalone: true,
     templateUrl: './form-congress.component.html',
     styleUrl: './form-congress.component.scss',
-    imports: [CommonModule, MaterialModule, ReactiveFormsModule, TablerIconsModule, ImagenPathPipe, MoreInfoComponent]
+    imports: [CommonModule, MaterialModule, ReactiveFormsModule, TablerIconsModule, ImagenPathPipe, MoreInfoComponent, PaymentStatusPipe,
+      MatRadioModule,]
 })
 
 export class FormCongressComponent implements OnInit, OnDestroy{
@@ -58,9 +60,19 @@ export class FormCongressComponent implements OnInit, OnDestroy{
   conference : any;
   payment : any;
   blockPayment : boolean = false;
+  showTab0 : boolean = false;
+  showTab1 : boolean = true;
+  showTab2 : boolean = true;
+  showTab3 : boolean = true;
+  showLabelIugu : boolean = false;
+  cpfRequiredIfIugu : boolean = false;
+  program : any;
+  paypalURL : string = '';
+  canceledRedirect : boolean = false;
+  showErrorAnniversary : boolean = false;
+
 
   constructor(
-              // private router: Router,
               private fb : FormBuilder,
               private authService : AuthService,
               private validatorService : ValidateService,
@@ -69,23 +81,21 @@ export class FormCongressComponent implements OnInit, OnDestroy{
               private toastr: ToastrService,
               private dialog : MatDialog,
               private location : Location,
-              private router : Router
+              private router : Router,
              )  
     { 
       (screen.width < 800) ? this.phone = true : this.phone = false;
     }
 
     
-    
-    ngOnInit(): void {
+  ngOnInit(): void {
 
-  
+
 
       this.errorService.closeIsLoading$.pipe(delay(700)).subscribe( (emitted) => { if(emitted){this.isLoading = false}});
       this.errorService.repitedPayment$.subscribe( (emitted) => { if(emitted){this.blockPayment = true}});
 
       this.checkIfUserExist();
-
 
       this.myForm = this.fb.group({
         fullName: new FormControl('', [Validators.required]),
@@ -104,8 +114,8 @@ export class FormCongressComponent implements OnInit, OnDestroy{
         fullNamePayment: new FormControl( '', [Validators.required]),
         emailPayment: new FormControl('', [Validators.required]),
         price: new FormControl('300', [Validators.required]),
-        cpf:  new FormControl('', [Validators.required]),
-        // cpf:  new FormControl('05693810615', [Validators.required]),
+        cpf:  new FormControl(''),
+        // cpf:  new FormControl('', [Validators.required]),
         payment:  new FormControl('', [Validators.required]),
 
       });
@@ -119,10 +129,7 @@ export class FormCongressComponent implements OnInit, OnDestroy{
   }
 
 
-
-
    checkIfUserExist(){
-     
      
      let userSS = getDataSS('user');
      if(userSS){
@@ -141,12 +148,8 @@ export class FormCongressComponent implements OnInit, OnDestroy{
      }else{
 
      }
-
-
-    //  const fullName = this.myForm.get('fullName')?.value;
     
    }
-
    
    changeTab(index: number): void {
      this.isLoading = true;
@@ -158,12 +161,6 @@ export class FormCongressComponent implements OnInit, OnDestroy{
       }, 1000)
       this.goToTop();
     }
-
-    showTab0 : boolean = true;
-    showTab1 : boolean = true;
-    showTab2 : boolean = true;
-    showTab3 : boolean = true;
-
 
    checkTabSelected(user:any){
     console.log(user.noProfileYet);
@@ -181,6 +178,7 @@ export class FormCongressComponent implements OnInit, OnDestroy{
          this.showTab0 = false;
          this.showTab1 = false;
        }else if(tabSelected === 'profile' && !user.noProfileYet){
+         this.showTab0 = true;
          this.showTab1 = false;
          this.showTab2 = false;
        }
@@ -193,6 +191,20 @@ export class FormCongressComponent implements OnInit, OnDestroy{
 
    }
 
+  cpfRequiredIfIuguValidator(){
+
+      this.cpfRequiredIfIugu = false;
+      const payment = this.myFormPayment.get('payment')?.value;
+      const cpf = this.myFormPayment.get('cpf')?.value;
+
+      if (payment === 'iugu' && !cpf) {
+        this.cpfRequiredIfIugu = true;
+    
+      }else if(!payment && !cpf){
+        this.cpfRequiredIfIugu = true;
+      }
+   
+  }
 
   get f() {
     return this.myForm.controls;
@@ -218,13 +230,15 @@ export class FormCongressComponent implements OnInit, OnDestroy{
         if(element.name === 'Tomista'){
           this.blockPayment = true;
           const tabSelected = getDataSS('tabSelected');
-          if( (tabSelected && tabSelected === 'inscription')  || !this.phone ){
-            this.warningToast('Você já se cadastrou.')
-          }
+          // if( (tabSelected && tabSelected === 'inscription')  ){
+          //   this.warningToast('Você já se cadastrou.')
+          // }
+          console.log(this.payment);
         }
       }); 
 
     }  
+
     console.log(user);
 
     //en el primer login todavia no se creo el perfil
@@ -239,6 +253,7 @@ export class FormCongressComponent implements OnInit, OnDestroy{
       })
 
       this.warningToast('Precisamos que você complete seu perfil.');
+      this.showTab0 = true;
       this.showTab1 = false;
       this.showTab2 = false;
       this.profileFirst = true;
@@ -269,7 +284,6 @@ export class FormCongressComponent implements OnInit, OnDestroy{
    
 
     }
-
    
     
   }
@@ -280,7 +294,6 @@ export class FormCongressComponent implements OnInit, OnDestroy{
       this.myForm.markAllAsTouched(); 
       return;
     }
-
 
     let body = {
       ...this.myForm.value,
@@ -306,6 +319,8 @@ export class FormCongressComponent implements OnInit, OnDestroy{
           setTimeout(()=>{  
             this.successToast('Formulario salvo com sucesso');
             this.isLoading = false;
+            // this.checkPagamento();
+
             if(this.phone){
               this.router.navigateByUrl('/home-app');
               return
@@ -324,11 +339,14 @@ export class FormCongressComponent implements OnInit, OnDestroy{
   onSavePayment() {
 
     console.log(this.myFormPayment.value);
+
+    this.cpfRequiredIfIuguValidator();
     
-    if (this.myFormPayment.invalid) {
+    if (this.myFormPayment.invalid || this.cpfRequiredIfIugu ) {
       this.myFormPayment.markAllAsTouched(); 
       return;
     }
+
 
     const body = {
       fullName: this.myFormPayment.get('fullNamePayment')?.value,
@@ -341,12 +359,18 @@ export class FormCongressComponent implements OnInit, OnDestroy{
 
     this.isLoading = true;
     this.paymentService.createPayment(body).subscribe(
-      ( {success} )=>{
+      ( {success, urlPaypal} )=>{
         if(success){
           setTimeout(()=>{  
             this.showSuccessAlert('Sua fatura foi enviada com sucesso','Verifique seu e-mail');
             this.isLoading = false;
             this.blockPayment = true;
+
+            if(body.paymentOption === 'paypal'){
+              let response = JSON.stringify(urlPaypal)
+              this.paypalURL = response.replace(/"/g,"")
+              this.showRedirectToPaypal('Vamos redirecioná-lo para o paypal', '');
+            }
             if(this.phone){
               this.router.navigateByUrl('/home-app');
               return
@@ -356,6 +380,21 @@ export class FormCongressComponent implements OnInit, OnDestroy{
       });
   }
 
+
+  selectPayment(payment: string): void {
+    const currentPayment = this.myFormPayment.get('payment')?.value;
+    if (currentPayment === payment) {
+      this.myFormPayment.get('payment')?.setValue('');
+      this.showLabelIugu = false;
+      this.cpfRequiredIfIugu = false;
+    } else {
+      this.myFormPayment.get('payment')?.setValue(payment);
+      this.showLabelIugu = payment === 'iugu';
+      this.cpfRequiredIfIugu = payment === 'iugu';
+    }
+  }
+
+
   showSuccessAlert(title:string, subtitle : string){
     Swal.fire({
       title: title,
@@ -364,11 +403,42 @@ export class FormCongressComponent implements OnInit, OnDestroy{
     });
   }
 
+  showRedirectToPaypal(title:string, subtitle : string){
+    Swal.fire({
+      title: title,
+      text: '',
+      icon: "success",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Continuar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.open(this.paypalURL, '_blank');
+      }else{
+        Swal.fire({
+          title: "Você cancelou o redirecionamento",
+          text: "Retomar o pagamento o mais rápido possível",
+          icon: "info"
+        });
+        this.canceledRedirect = true;
+      }
+    });
+  }
+
+  continuePaypalPayment(){
+    window.open(this.paypalURL, '_blank');
+  }
+
+
   checkCPF() {
 
     this.showChecked = false;
+    this.cpfRequiredIfIugu = false;
     const cpf = this.myFormPayment.get('cpf');
     console.log(cpf);
+
+    if(!cpf?.value)return
   
     if (cpf && cpf.value !== '') {
       const isValidCPF = this.paymentService.validaCPF(cpf.value);
@@ -384,8 +454,6 @@ export class FormCongressComponent implements OnInit, OnDestroy{
      
     }
   }
-
-  showErrorAnniversary : boolean = false;
 
 
   formatInput(value: string) {
@@ -463,7 +531,6 @@ export class FormCongressComponent implements OnInit, OnDestroy{
       }
   }
   
-
   get validateNumberCount() : string {
     const errors = this.myFormPayment.get('cpf')?.errors;
     if ( errors?.['invalidCPF'] ) {
@@ -500,7 +567,6 @@ export class FormCongressComponent implements OnInit, OnDestroy{
     const birthDate = moment(birthday, 'DD/MM/YYYY'); // Convertir la fecha de nacimiento a objeto moment
   
     const age = today.diff(birthDate, 'years'); // Calcular la diferencia de años entre hoy y la fecha de nacimiento
-  console.log(age);
     if (age < 18) {
     setTimeout(()=>{ this.myForm.get('age')?.setValue(null) }, 100)
     } else{
@@ -631,8 +697,7 @@ export class FormCongressComponent implements OnInit, OnDestroy{
   }
 
   ngOnDestroy(): void {
-    sessionStorage.removeItem('inscription');
-    sessionStorage.removeItem('hotel');
+    sessionStorage.removeItem('tabSelected');
   }
     
 
